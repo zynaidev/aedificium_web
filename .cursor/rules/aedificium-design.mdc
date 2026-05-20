@@ -1,0 +1,45 @@
+---
+description: AEDIFICIUM design system — colors, typography, visual language
+globs: "**/*.{css,tsx,ts}"
+alwaysApply: false
+---
+
+# Design System
+
+## Colors (warm dark — NOT cold zinc)
+
+- `--bg-base: #0a0806`, `--bg-elevated: #111009`
+- `--bg-glass: rgba(255,255,255,0.03)`, `--bg-glass-strong: rgba(255,255,255,0.05)`
+- `--accent: #c17a4a`, `--accent-light: #d4956a`, `--accent-glow: rgba(193,122,74,0.15)`
+- `--text-primary: #f5f0eb`, `--text-secondary: #9a9188`, `--text-tertiary: #5c5650`
+- `--border-hairline: rgba(255,255,255,0.06)`, `--border-default: rgba(255,255,255,0.10)`
+- Section spacing: 120px desktop / 64px mobile; container max 1280px
+
+## Typography
+
+- **Display/H1/H2:** Cormorant Garamond 500 — H1 `clamp(48px, 7vw, 80px)` lh 1.0, ls -0.02em; accent word italic + `var(--accent)`
+- **Body:** Inter 400 — `clamp(14px, 1.1vw, 16px)` lh 1.7
+- **Nav/labels:** Inter 500 uppercase, ls 0.12em, 11–12px
+- **Wordmark:** "AEDIFICIUM" — all caps, ls 0.2em, ~13px
+- Google Fonts: Cormorant Garamond 400/500/500 italic; Inter 400/500
+
+## Visual language
+
+Luxury editorial (not tech/glassmorphism). Warm brownish-black backgrounds. Photo grids with warm amber duotone overlay. Serif headlines + thin sans body. Minimal decoration — typography and whitespace. Dividers: `border-top: 1px solid var(--border-hairline)`. Section labels: `01`, `02` — Inter, `--text-tertiary`, small uppercase.
+
+## Hero photo overlay
+
+```tsx
+<div className="absolute inset-0" style={{
+  background: "linear-gradient(to bottom, rgba(80,30,10,0.3), rgba(10,8,6,0.5))",
+  mixBlendMode: "multiply",
+}} />
+```
+
+## SectionLabel
+
+```tsx
+<p className="text-xs uppercase tracking-widest" style={{ color: "var(--text-tertiary)" }}>
+  {number && <span className="mr-2">{number}</span>}{label}
+</p>
+```

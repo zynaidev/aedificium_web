@@ -1,0 +1,54 @@
+---
+description: AEDIFICIUM project overview, stack, structure, git, deploy
+alwaysApply: true
+---
+
+# AEDIFICIUM — Project Overview
+
+**Brand:** Execution infrastructure for professional design (architects & interior designers)
+**Goal:** Rebuild existing WordPress site in Next.js 15 — same visual design, stable modern foundation
+**Language:** English only (all UI copy and content)
+**Repo:** https://github.com/zynaidev/aedificium_web
+**Local dev:** localhost:3000 (no domain yet — VPS/Coolify deploy is final step)
+**OS:** Windows PowerShell — use `Remove-Item -Recurse -Force .next` instead of `rm -rf .next`; run commands one at a time, not chained with `&&`
+
+**Full spec:** `.cursor/aedificium_project_instructions.md`
+
+## Site structure
+
+Single-page landing at `/` — sections in order: Header/Nav → Hero → The Problem → Manifesto → The Platform → What We Believe → Brand Marquee → Final CTA → Footer.
+
+```
+app/(marketing)/layout.tsx   — Header + Footer + SmoothScrollProvider
+app/(marketing)/page.tsx     — all sections composed
+app/globals.css              — design tokens, resets, keyframes
+app/layout.tsx               — root layout, fonts, metadata
+components/layout/           — Header, Footer
+components/sections/         — Hero, TheProblem, Manifesto, ThePlatform, WhatWeBelieve, BrandMarquee, FinalCTA
+components/animations/       — FadeIn, ScrollReveal, CountUp
+components/providers/        — SmoothScrollProvider
+components/ui/               — Button, SectionLabel, Container
+public/images/hero/          — interior photos (placeholder → real later)
+```
+
+## Tech stack
+
+- Next.js 15 App Router + TypeScript, Tailwind CSS v4, shadcn/ui (new-york, dark forced)
+- Framer Motion (mount, scroll reveals, header), GSAP + ScrollTrigger (sticky cards), Lenis (smooth scroll)
+- **No** Three.js / React Three Fiber
+- Dynamic import + `ssr: false` for heavy animation components
+- Hero images: `priority`; below-fold: `loading="lazy"`; use `<Image>` with `sizes`
+- `next.config.ts`: `output: 'standalone'` (Docker/VPS)
+
+## Git workflow
+
+`feat/[name]` branches from main → commit `feat:` / `fix:` / `style:` / `perf:` / `refactor:` → PR → merge → delete branch.
+File renames: always `git mv` (case sensitivity for Linux deploy). Never rename via Windows Explorer.
+
+## Lighthouse targets
+
+Performance 90+, Accessibility/SEO/Best Practices 100. Common killers: missing hero `priority`, missing explicit Image dimensions, too much main-thread JS.
+
+## Deploy (later)
+
+Coolify on Hetzner: Dockerfile, port 3000, network alias `aedificium-web`, Caddy `aedificium.design` → reverse_proxy, DNS A → 204.168.146.182.

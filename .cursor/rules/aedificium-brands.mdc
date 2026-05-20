@@ -1,0 +1,72 @@
+---
+description: Brand list for BrandMarquee.tsx
+globs: "**/BrandMarquee.tsx"
+alwaysApply: false
+---
+
+# Brands Array
+
+Export as `BRANDS` in `BrandMarquee.tsx`. Marquee: 3 rows, ◆ separator, alternating scroll directions.
+
+```typescript
+export const BRANDS = [
+  "101 Copenhagen", "41Zero42", "A-N-D", "ABK Group", "Adea", "Adriani e Rossi",
+  "Agape", "Agape Casa", "Albed", "Alice Ceramica", "Alivar", "Almalight",
+  "Alonpi", "Altrenotti", "Antique Mirror", "Antrax IT", "Aquaelite", "Armony",
+  "Aromas del Campo", "Artelinea", "Aster Cucine", "Atelier Alain Ellouz",
+  "Atelier Bowy C.D.", "Atelier Luxus", "Atlas Concorde", "Atmopshera", "Axolight",
+  "Bagnara", "Bang&Olufsen", "Barausse", "Barovier&Toso", "Belarte Studio",
+  "Bertocci", "Besana Carpet Lab", "Birex", "Bizzotto", "Bizzotto Italia",
+  "Boca do Lobo", "Boln", "BOMMA", "Bosa", "Botteganove", "BRABBU", "Braid",
+  "Brokis", "Bulbo", "BuzziSpace", "By-Boo", "Caccaro", "Caffé Latte", "Caimi",
+  "Caleido", "Calligaris", "Caos Creativo", "Capital Collection", "Cappellini",
+  "Carpet Edition", "Carpyen", "Casabath", "Casalgrande Padana", "Cattelan Italia",
+  "CEA Design", "Celsius Panel", "Ceramica Cielo", "Ceramica Flaminia",
+  "Ceramica Galassia", "Ceramica Sant'Agostino", "Cerasarda", "Cercom",
+  "Cierre 1972", "Cinca", "Cinier", "Circu Magical Furniture", "Cizeta",
+  "Composit", "COMPREX", "Connubia", "Cosentino", "Cotto Manetti", "CP Parquet",
+  "CPRN Homood", "Creativemary", "Cristina Rubinetterie", "CTO Lighting",
+  "Cucinesse", "Dallagnese", "Dante - Goods and Bads", "Davani Group", "DEDAR",
+  "DelightFULL", "Desalto", "Devina Nais", "Diabla", "District Eight", "Driade",
+  "Drigani", "Eclettis", "Edizioni Design", "Edra", "Effe", "eForma", "Eleonora",
+  "Élitis", "EMIL Group", "Emporium", "Ennerev", "Enrico Pellizzoni",
+  "Essential Home", "Estiluz", "Estro Collezioni", "Ethimo", "Etruria", "Euphoria",
+  "Expormim", "Fantini", "FASEM", "FDB Mobler", "Ferri1956", "Filix Lighting",
+  "FIMA", "Flexa Lighting", "Flexteam", "Florim Ceramiche", "FLOS", "Flou",
+  "Fontana Arte", "FonteAlta", "Forestier", "Formitalia Glamour",
+  "Fredericia Furniture", "Frezza", "Frigerio", "Gaber", "Gaggenau", "GAN Rugs",
+  "Gandia Blasco", "Garda Furniture", "Gazzotti", "Gentry Home", "Geopietra",
+  "Gervasoni", "Ghidini 1961", "Giardino di Corten", "Giessegi", "Giorgio Casa",
+  "Glass Design", "Gloster", "Goes", "Greenapple", "Gruppo Geromin", "Gypsum",
+  "Henge Kitchens", "Horm/Casamania", "Hotbath", "House Nordic", "i4Mariani",
+  "ICF Office", "IdeaGroup", "Ideal Lux", "Il Fanale", "ILTI Luce",
+  "Imola Ceramiche", "Inbani Design", "Inkiostro Bianco", "iSimar", "ITALGRANITI",
+  "ITLAS", "JAB", "John Richmond", "K-3", "KARMAN", "Kartell", "Kave Home",
+  "KICO", "KN Industrie", "La Boite Concept", "La Cividina", "La Fenice Marmi",
+  "La Palma", "La Seggiola", "Laborlegno", "Lafaenza", "LAMINAM", "Lando",
+  "Layer Stone", "Leliévre", "LEMA Mobili", "Leonardo Ceramics", "Les Jardins",
+  "Linie Design", "Listone Giordano", "LITHOS", "Luce&Light", "LUXXU",
+  "Lyxo Design", "Maison Valentina", "Malabar Artistic Furniture", "Matteo Brioni",
+  "Mattiazzi", "Maxdivani", "Mazzega 1946", "MDC", "Meridiani", "Meroni&Colzani",
+  "Mestre", "Micadoni", "Midsummer Milano", "Milano Bedding", "MIPA", "Mirabili",
+  "Missoni Home Collection", "Misuraemme", "Modulnova", "Moooi", "Mosaico Micro",
+  "Musa", "Muuto", "My Home Collection", "Nature Design", "NEMO Lighting",
+  "Nero Sicilia", "Noorth", "Nordic Knots", "Norr11", "Novabell", "Nuura",
+  "OASIS", "Olivelab", "Ondarreta", "One A", "Ottiu", "Pablo Designs", "Paola C",
+  "Paola Lenti", "Pataviumart", "Pedrali", "Penta Light", "Peronda",
+  "Petite Friture", "Petracer", "Pietra Pece", "Point.", "Pollini",
+  "Popham Design", "PORUS Studio", "Potocco", "Prado", "Prof Office",
+  "Pujol Illuminacion", "PVD Concept", "Q de Bouteilles", "Quadro Design",
+  "Quare", "Quarella", "Quintessenza Ceramiche", "Rakumba Lighting",
+  "Reggiani Luce", "Relax Design", "RES Italia", "Rex Kralj", "Rexa Design",
+  "Röshults", "Rubelli", "Rug' Society", "Rugvista", "Saba Italia", "Sancal",
+  "Santa&Cole", "Sartoris", "Sbordoni", "SCAB Design", "Scarabeo Ceramiche",
+  "Scavolini", "Seletti", "Seyvaa", "Sichenia", "SICIS", "Studioart",
+  "Systemtronic", "Talenti", "Targetti", "Terzofoco", "THG Paris", "Todobarro",
+  "Tonelli Design", "Treemme Rubinetterie", "Trone", "TUBES", "Urban Cotton",
+  "Urban Nature Collection", "VEGEA", "Vermobil", "Very Wood", "Vibia",
+  "Viccarbe", "Visionnaire", "Vismaravetro", "Vitage", "Vittoria Frigerio",
+  "Voltra Lighting", "Warm Nordic", "Wayne Enterprises", "Wendelbo",
+  "Wood Tailors Club", "Zafferano", "Zampieri Cucine", "Zanotta", "Zucchetti"
+];
+```

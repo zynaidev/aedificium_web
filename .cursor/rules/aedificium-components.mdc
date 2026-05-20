@@ -1,0 +1,54 @@
+---
+description: AEDIFICIUM component specs and animation patterns
+globs: "**/*.{tsx,ts}"
+alwaysApply: false
+---
+
+# Components & Animation
+
+## Header
+
+Fixed top. Left: "AEDIFICIUM" wordmark. Right: PLATFORM | BRAND LIBRARY | OS | PARTNER LOGIN + REQUEST ACCESS pill. Mobile: hamburger.
+Scroll: transparent → `rgba(10,8,6,0.85)` + backdrop-blur via Framer Motion `useScroll` + `useTransform` (no scroll listeners). REQUEST ACCESS: `var(--accent)` bg, dark text.
+
+## Hero
+
+Full viewport, 55/45 split. Left: eyebrow, H1 with italic accent "everything", subtext, two CTAs. Right: masonry 5–6 photos with warm overlay, stagger from right. Background `--bg-base`, optional warm radial glow bottom-left.
+
+## Brand Marquee
+
+Three rows, alternating directions, ◆ separator, 30–40s loop, text only (no images), CSS animation, `animation-play-state: paused` on hover.
+
+## Platform stats
+
+`300+` / `1` / `0` — large number + label, no card border, CountUp on scroll into view.
+
+## Scroll reveal (FadeIn)
+
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 24 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{ duration: 0.7, ease: "easeOut" }}
+>
+```
+
+Stagger: `staggerChildren: 0.10`, item `y: 20`, duration 0.7 easeOut.
+
+## Hydration-safe client state
+
+```tsx
+const [active, setActive] = useState(-1);
+useEffect(() => { setActive(0); }, []);
+```
+
+## Reduced motion (required)
+
+```tsx
+const shouldReduce = useReducedMotion();
+const variants = {
+  hidden: shouldReduce ? { opacity: 1 } : { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+```
