@@ -12,7 +12,7 @@ function MarqueeRow({ brands, reverse }: { brands: string[]; reverse?: boolean }
   const items = [...brands, ...brands];
   return (
     <div style={{ overflow: "hidden", maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
-      <div className={reverse ? "animate-marquee-right" : "animate-marquee-left"} style={{ display: "flex", width: "max-content", gap: "0" }}>
+      <div className={reverse ? "marquee-right" : "marquee-left"} style={{ display: "flex", width: "max-content", gap: "0" }}>
         {items.map((brand, i) => (
           <span key={i} style={{ fontFamily: "var(--font-inter)", fontSize: "12px", letterSpacing: "0.08em", color: "var(--text-secondary)", whiteSpace: "nowrap", padding: "0 20px" }}>
             {brand} <span style={{ color: "var(--text-tertiary)", margin: "0 4px" }}>◆</span>

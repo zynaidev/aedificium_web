@@ -3,7 +3,7 @@ import Container from "@/components/ui/Container";
 
 export default function Hero() {
   return (
-    <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "64px", background: "var(--bg-base)" }}>
+    <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "80px", paddingBottom: "80px", background: "var(--bg-base)" }}>
       <Container style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center", width: "100%" }}>
         <div>
           <p style={{ fontFamily: "var(--font-inter)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.16em", color: "var(--text-tertiary)", textTransform: "uppercase", marginBottom: "32px" }}>
@@ -27,10 +27,28 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", height: "560px" }}>
-          {[1,2,3,4,5,6].map((i) => (
-            <div key={i} style={{ background: "var(--bg-elevated)", borderRadius: "4px", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(80,30,10,0.2), rgba(10,8,6,0.6))" }} />
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "repeat(3, 1fr)",
+          gap: "6px",
+          height: "600px",
+          alignSelf: "stretch"
+        }}>
+          {[0,1,2,3,4,5].map((i) => (
+            <div key={i} style={{
+              background: "#1a1410",
+              borderRadius: "3px",
+              position: "relative",
+              overflow: "hidden",
+              gridColumn: i === 0 ? "1 / 2" : "auto",
+              gridRow: i === 0 ? "1 / 3" : "auto",
+            }}>
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to bottom, rgba(80,30,10,0.15), rgba(10,8,6,0.7))"
+              }} />
             </div>
           ))}
         </div>

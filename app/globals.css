@@ -42,8 +42,15 @@
     from { transform: translateX(-50%); }
     to { transform: translateX(0); }
   }
-  .animate-marquee-left { animation: marquee-left 40s linear infinite; }
-  .animate-marquee-right { animation: marquee-right 40s linear infinite; }
-  .animate-marquee-left:hover,
-  .animate-marquee-right:hover { animation-play-state: paused; }
+}
+
+.marquee-left {
+  animation: marquee-left 40s linear infinite;
+}
+.marquee-right {
+  animation: marquee-right 40s linear infinite;
+}
+.marquee-left:hover,
+.marquee-right:hover {
+  animation-play-state: paused;
 }
