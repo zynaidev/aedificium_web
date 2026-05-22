@@ -40,6 +40,39 @@ export default function TheProblem() {
         overflow: "hidden",
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+          opacity: 0.35,
+        }}
+      >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 1400 800"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <radialGradient id="tprobGlow" cx="70%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#b98b36" stopOpacity="0.07" />
+              <stop offset="100%" stopColor="#b98b36" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <ellipse cx="980" cy="400" rx="500" ry="350" fill="url(#tprobGlow)" />
+          <line x1="0" y1="0" x2="400" y2="800" stroke="rgba(185,139,54,0.035)" strokeWidth="1" />
+          <line x1="200" y1="0" x2="600" y2="800" stroke="rgba(185,139,54,0.025)" strokeWidth="1" />
+          <line x1="400" y1="0" x2="800" y2="800" stroke="rgba(185,139,54,0.02)" strokeWidth="1" />
+          <line x1="1000" y1="0" x2="1400" y2="800" stroke="rgba(185,139,54,0.03)" strokeWidth="1" />
+          <line x1="1100" y1="0" x2="1400" y2="500" stroke="rgba(185,139,54,0.02)" strokeWidth="1" />
+          <rect x="840" y="80" width="480" height="640" fill="none" stroke="rgba(185,139,54,0.04)" strokeWidth="1" />
+          <rect x="880" y="120" width="400" height="560" fill="none" stroke="rgba(185,139,54,0.025)" strokeWidth="1" />
+        </svg>
+      </div>
       <style>{`
         @keyframes accentPulse {
           0%, 100% { opacity: 1; }
