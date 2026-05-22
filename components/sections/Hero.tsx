@@ -1,7 +1,39 @@
 "use client";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import Container from "@/components/ui/Container";
 
+interface HeroImage {
+  name: string;
+  url: string;
+}
+
 export default function Hero() {
+  const [images, setImages] = useState<HeroImage[]>([]);
+
+  useEffect(() => {
+    async function loadImages() {
+      const { data, error } = await supabase.storage
+        .from("hero-gallery")
+        .list("", { limit: 6, sortBy: { column: "created_at", order: "desc" } });
+
+      if (error || !data) return;
+
+      const urls = data
+        .filter((f) => f.name !== ".emptyFolderPlaceholder")
+        .slice(0, 6)
+        .map((file) => {
+          const { data: urlData } = supabase.storage
+            .from("hero-gallery")
+            .getPublicUrl(file.name);
+          return { name: file.name, url: urlData.publicUrl };
+        });
+
+      setImages(urls);
+    }
+    loadImages();
+  }, []);
+
   return (
     <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "80px", paddingBottom: "80px", background: "var(--bg-base)" }}>
       <Container style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center", width: "100%" }}>
@@ -27,27 +59,34 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridTemplateRows: "repeat(3, 1fr)",
-          gap: "6px",
-          height: "600px",
-          alignSelf: "stretch"
-        }}>
-          {[0,1,2,3,4,5].map((i) => (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "repeat(3, 1fr)", gap: "6px", height: "600px" }}>
+          {(images.length > 0 ? images : Array(6).fill(null)).map((img, i) => (
             <div key={i} style={{
-              background: "#1a1410",
-              borderRadius: "3px",
               position: "relative",
               overflow: "hidden",
+              borderRadius: "3px",
+              background: "#1a1410",
               gridColumn: i === 0 ? "1 / 2" : "auto",
               gridRow: i === 0 ? "1 / 3" : "auto",
             }}>
+              {img && (
+                <img
+                  src={img.url}
+                  alt=""
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
               <div style={{
                 position: "absolute",
                 inset: 0,
-                background: "linear-gradient(to bottom, rgba(80,30,10,0.15), rgba(10,8,6,0.7))"
+                background: "linear-gradient(to bottom, rgba(80,30,10,0.15), rgba(10,8,6,0.5))",
+                zIndex: 1,
               }} />
             </div>
           ))}
