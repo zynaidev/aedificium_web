@@ -4,11 +4,14 @@
   :root {
     --bg-base: #0a0806;
     --bg-elevated: #111009;
+    --bg-surface: #1a0b08;
     --bg-glass: rgba(255, 255, 255, 0.03);
     --bg-glass-strong: rgba(255, 255, 255, 0.05);
     --accent: #c17a4a;
+    --accent-gold: #b98b36;
     --accent-light: #d4956a;
     --accent-glow: rgba(193, 122, 74, 0.15);
+    --text-heading: #f4f1ea;
     --text-primary: #f5f0eb;
     --text-secondary: #9a9188;
     --text-tertiary: #5c5650;
