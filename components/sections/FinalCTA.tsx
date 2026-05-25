@@ -281,12 +281,17 @@ export default function FinalCTA() {
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "#0a0806",
-              background: primaryHover ? "#d4a020" : "var(--accent-gold)",
+              background: primaryHover
+                ? "linear-gradient(135deg, #d4a020 0%, #b98b36 50%, #c17a4a 100%)"
+                : "linear-gradient(135deg, #c17a4a 0%, #b98b36 50%, #d4a020 100%)",
+              boxShadow: primaryHover
+                ? "0 0 24px rgba(185,139,54,0.4), 0 0 48px rgba(185,139,54,0.15)"
+                : "0 0 12px rgba(185,139,54,0.15)",
               padding: "15px 40px",
               borderRadius: "2px",
               textDecoration: "none",
               display: "inline-block",
-              transition: "background 0.3s ease",
+              transition: "background 0.4s ease, box-shadow 0.3s ease",
             }}
           >
             Start a Project

@@ -23,7 +23,7 @@ export default function Manifesto() {
     <section
       className="mf-section"
       style={{
-        padding: "160px 0",
+        padding: "80px 0",
         background: "var(--bg-base)",
         borderTop: "1px solid var(--border-hairline)",
         borderBottom: "1px solid var(--border-hairline)",
@@ -32,14 +32,62 @@ export default function Manifesto() {
       }}
     >
       <style>{`
+        @keyframes mfAurora1 {
+          0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.7; }
+          33% { transform: translate(-48%, -52%) scale(1.2) rotate(6deg); opacity: 1; }
+          66% { transform: translate(-52%, -48%) scale(0.9) rotate(-4deg); opacity: 0.8; }
+        }
+        @keyframes mfAurora2 {
+          0%, 100% { transform: translate(-50%, -50%) scale(1.1) rotate(0deg); opacity: 0.5; }
+          50% { transform: translate(-50%, -50%) scale(0.85) rotate(10deg); opacity: 0.8; }
+        }
         @media (max-width: 1023px) {
-          .mf-section { padding: 120px 0 !important; }
+          .mf-section { padding: 64px 0 !important; }
         }
         @media (max-width: 767px) {
-          .mf-section { padding: 80px 0 !important; }
+          .mf-section { padding: 48px 0 !important; }
           .mf-quote { font-size: 24px !important; line-height: 1.5 !important; }
         }
       `}</style>
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "700px",
+            height: "400px",
+            background:
+              "radial-gradient(ellipse, rgba(185,139,54,0.12) 0%, rgba(185,139,54,0.06) 35%, transparent 70%)",
+            borderRadius: "50%",
+            animation: "mfAurora1 16s ease-in-out infinite",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "45%",
+            width: "500px",
+            height: "300px",
+            background:
+              "radial-gradient(ellipse, rgba(193,122,74,0.09) 0%, rgba(193,122,74,0.04) 45%, transparent 70%)",
+            borderRadius: "40% 60% 50% 50%",
+            animation: "mfAurora2 22s ease-in-out infinite",
+            filter: "blur(80px)",
+          }}
+        />
+      </div>
 
       <div
         style={{

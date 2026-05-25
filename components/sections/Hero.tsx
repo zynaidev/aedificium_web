@@ -160,7 +160,7 @@ export default function Hero() {
           gap: "12px",
           zIndex: 1,
           pointerEvents: "none",
-          transform: "rotate(-6deg) scale(1.05)",
+          transform: "none",
           opacity: mounted ? 1 : 0,
           transition: "opacity 1.5s ease",
         }}
