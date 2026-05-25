@@ -13,25 +13,79 @@ export default function Header() {
   }, []);
 
   return (
-    <header style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-      height: "64px",
-      background: scrolled ? "rgba(10,8,6,0.92)" : "transparent",
-      backdropFilter: scrolled ? "blur(12px)" : "none",
-      borderBottom: scrolled ? "1px solid var(--border-hairline)" : "none",
-      transition: "all 0.3s ease",
-    }}>
-      <Container style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ fontFamily: "var(--font-inter)", fontSize: "13px", fontWeight: 500, letterSpacing: "0.2em", color: "var(--text-primary)" }}>
+    <header
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        height: "68px",
+        willChange: "background-color",
+        background: scrolled ? "rgba(10,8,6,0.95)" : "rgba(10,8,6,0)",
+        backdropFilter: scrolled ? "blur(16px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
+        borderBottom: scrolled
+          ? "1px solid rgba(185,139,54,0.1)"
+          : "none",
+        transition: scrolled
+          ? "background 0.4s ease, border-color 0.4s ease, height 0.4s ease"
+          : "background 0.4s ease, border-color 0.4s ease",
+      }}
+    >
+      <Container
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingTop: "8px",
+          paddingBottom: "8px",
+          boxSizing: "border-box",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-inter)",
+            fontSize: "13px",
+            fontWeight: 500,
+            letterSpacing: "0.2em",
+            color: "var(--text-primary)",
+          }}
+        >
           AEDIFICIUM
         </span>
         <nav style={{ display: "flex", alignItems: "center", gap: "32px" }}>
           {NAV_LINKS.map((item) => (
-            <a key={item} href="#" style={{ fontFamily: "var(--font-inter)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", color: "var(--text-secondary)", textDecoration: "none" }}>
+            <a
+              key={item}
+              href="#"
+              style={{
+                fontFamily: "var(--font-inter)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                color: "var(--text-secondary)",
+                textDecoration: "none",
+              }}
+            >
               {item}
             </a>
           ))}
-          <a href="#" style={{ fontFamily: "var(--font-inter)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", color: "#0a0806", background: "var(--accent)", padding: "8px 20px", borderRadius: "100px", textDecoration: "none" }}>
+          <a
+            href="#"
+            style={{
+              fontFamily: "var(--font-inter)",
+              fontSize: "10.5px",
+              fontWeight: 500,
+              letterSpacing: "0.18em",
+              color: "#0a0806",
+              background: "var(--accent)",
+              padding: "9px 22px",
+              borderRadius: "2px",
+              textDecoration: "none",
+            }}
+          >
             REQUEST ACCESS
           </a>
         </nav>
