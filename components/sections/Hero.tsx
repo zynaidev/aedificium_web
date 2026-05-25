@@ -1,15 +1,25 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 
 const ALL_IMAGES = Array.from(
-  { length: 20 },
-  (_, i) => `/hero/hero-${String(i + 1).padStart(2, "0")}.jpg`
+  { length: 103 },
+  (_, i) => `/hero/hero-${String(i + 1).padStart(3, "0")}.jpg`
 );
 
-const COLUMN_SPEEDS = [70, 55, 85, 60, 75];
-const COLUMN_SCROLL_UP = [true, false, true, false, true];
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const DIRECTIONS = ["scrollUp", "scrollDown", "scrollUp", "scrollDown", "scrollUp"];
+const SPEEDS = ["160s", "130s", "190s", "145s", "175s"];
 
 const containerVariants = {
   hidden: {},
@@ -26,76 +36,44 @@ const itemVariants = {
   },
 };
 
-function getColumnImages(colIndex: number): string[] {
-  return [0, 1, 2, 3].map((row) => ALL_IMAGES[colIndex + row * 5]);
-}
-
-function ImageTrack({
-  images,
-  animationName,
-  duration,
-}: {
-  images: string[];
-  animationName: "scrollUp" | "scrollDown";
-  duration: number;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        animation: `${animationName} ${duration}s linear infinite`,
-        willChange: "transform",
-        transform: "translateZ(0)",
-      }}
-    >
-      {images.map((src) => (
-        <div
-          key={src}
-          style={{
-            borderRadius: "2px",
-            overflow: "hidden",
-            padding: "1px",
-            background:
-              "linear-gradient(135deg, rgba(193,122,74,0.3), rgba(193,122,74,0.05))",
-          }}
-        >
-          <img
-            src={src}
-            alt=""
-            style={{
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              display: "block",
-              opacity: 0.65,
-              filter: "grayscale(30%)",
-              transition: "opacity 0.4s ease, filter 0.4s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.filter = "grayscale(0%)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "0.65";
-              e.currentTarget.style.filter = "grayscale(30%)";
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function Hero() {
-  const [wallVisible, setWallVisible] = useState(false);
+  const [cols, setCols] = useState<string[][]>([[], [], [], [], []]);
+  const [mounted, setMounted] = useState(false);
   const [primaryHover, setPrimaryHover] = useState(false);
   const [secondaryHover, setSecondaryHover] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setWallVisible(true), 200);
-    return () => clearTimeout(timer);
+    const shuffled = shuffleArray(ALL_IMAGES);
+    const newCols = [0, 1, 2, 3, 4].map((colIndex) =>
+      shuffled.filter((_, i) => i % 5 === colIndex)
+    );
+    setCols(newCols);
+    setMounted(true);
+  }, []);
+
+  const VERTICAL_WORDS = [
+    "Execution Infrastructure",
+    "Professional Design",
+    "Brand Access",
+    "End-to-End Delivery",
+    "Budapest — Europe",
+    "300+ European Brands",
+    "Creative Intent",
+    "Physical Reality",
+  ];
+
+  const [wordIndex, setWordIndex] = useState(0);
+  const [wordVisible, setWordVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordVisible(false);
+      setTimeout(() => {
+        setWordIndex((i) => (i + 1) % VERTICAL_WORDS.length);
+        setWordVisible(true);
+      }, 400);
+    }, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -111,6 +89,38 @@ export default function Hero() {
         background: "var(--bg-base)",
       }}
     >
+      <style>{`
+        @keyframes scrollUp {
+          from { transform: translateY(0); }
+          to { transform: translateY(-50%); }
+        }
+        @keyframes scrollDown {
+          from { transform: translateY(-50%); }
+          to { transform: translateY(0); }
+        }
+        @keyframes everythingPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.65; }
+        }
+        @keyframes everythingShift {
+          0% { background-position: 0% center; }
+          100% { background-position: 200% center; }
+        }
+        .everything-gradient {
+          background: linear-gradient(90deg, #c17a4a 0%, #b98b36 35%, #e8c97a 55%, #b98b36 75%, #c17a4a 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: everythingPulse 3.5s ease-in-out infinite,
+                     everythingShift 6s linear infinite;
+          font-style: italic;
+          display: block;
+          padding-bottom: 8px;
+          margin-bottom: -8px;
+        }
+      `}</style>
+
       <div
         style={{
           position: "absolute",
@@ -138,16 +148,6 @@ export default function Hero() {
           pointerEvents: "none",
         }}
       />
-      <style>{`
-        @keyframes scrollUp {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-50%); }
-        }
-        @keyframes scrollDown {
-          0% { transform: translateY(-50%); }
-          100% { transform: translateY(0); }
-        }
-      `}</style>
 
       <div
         style={{
@@ -156,43 +156,76 @@ export default function Hero() {
           right: "-8%",
           width: "65%",
           height: "200%",
+          display: "flex",
+          gap: "12px",
           zIndex: 1,
           pointerEvents: "none",
           transform: "rotate(-6deg) scale(1.05)",
-          opacity: wallVisible ? 1 : 0,
+          opacity: mounted ? 1 : 0,
           transition: "opacity 1.5s ease",
         }}
       >
-        <div style={{ display: "flex", gap: "12px", height: "100%" }}>
-          {COLUMN_SPEEDS.map((duration, colIndex) => {
-            const images = getColumnImages(colIndex);
-            const animationName = COLUMN_SCROLL_UP[colIndex] ? "scrollUp" : "scrollDown";
-            return (
+        {cols.map((colImages, colIndex) => (
+          <div
+            key={colIndex}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              minWidth: "200px",
+              overflow: "hidden",
+            }}
+          >
+            {[0, 1].map((trackIndex) => (
               <div
-                key={colIndex}
+                key={trackIndex}
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   gap: "12px",
-                  flex: 1,
-                  minWidth: "200px",
-                  overflow: "hidden",
+                  animation: `${DIRECTIONS[colIndex]} ${SPEEDS[colIndex]} linear infinite`,
+                  willChange: "transform",
                 }}
               >
-                <ImageTrack
-                  images={images}
-                  animationName={animationName}
-                  duration={duration}
-                />
-                <ImageTrack
-                  images={images}
-                  animationName={animationName}
-                  duration={duration}
-                />
+                {colImages.map((src, imgIndex) => (
+                  <div
+                    key={imgIndex}
+                    style={{
+                      borderRadius: "2px",
+                      overflow: "hidden",
+                      padding: "1px",
+                      background:
+                        "linear-gradient(135deg, rgba(193,122,74,0.3), rgba(193,122,74,0.05))",
+                    }}
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "cover",
+                        opacity: 0.65,
+                        filter: "grayscale(30%)",
+                        transition: "opacity 0.4s ease, filter 0.4s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLImageElement).style.opacity = "1";
+                        (e.target as HTMLImageElement).style.filter = "grayscale(0%)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLImageElement).style.opacity = "0.65";
+                        (e.target as HTMLImageElement).style.filter = "grayscale(30%)";
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       <div
@@ -225,6 +258,7 @@ export default function Hero() {
           transformOrigin: "center center",
           zIndex: 6,
           pointerEvents: "none",
+          whiteSpace: "nowrap",
         }}
       >
         <span
@@ -233,12 +267,14 @@ export default function Hero() {
             fontSize: "9px",
             letterSpacing: "0.35em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.12)",
+            color: "rgba(255,255,255,0.18)",
             fontWeight: 400,
-            whiteSpace: "nowrap",
+            opacity: wordVisible ? 1 : 0,
+            transition: "opacity 0.4s ease",
+            display: "block",
           }}
         >
-          Execution Infrastructure — Professional Design
+          {VERTICAL_WORDS[wordIndex]}
         </span>
       </div>
 
@@ -296,28 +332,23 @@ export default function Hero() {
             <h1
               style={{
                 fontFamily: "var(--font-cormorant)",
-                fontSize: "clamp(52px, 6.5vw, 88px)",
-                fontWeight: 400,
+                fontSize: "clamp(48px, 6.5vw, 88px)",
+                fontWeight: 300,
                 lineHeight: 0.97,
                 letterSpacing: "-0.03em",
-                color: "var(--text-primary)",
+                color: "var(--text-heading)",
                 marginBottom: "28px",
               }}
             >
-              Design without limits.
-              <br />
-              We handle{" "}
-              <em
-                style={{
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  color: "var(--accent)",
-                }}
+              <span style={{ display: "block" }}>Design without limits.</span>
+              <span style={{ display: "block" }}>We handle</span>
+              <span
+                className="everything-gradient"
+                style={{ paddingBottom: "8px", marginBottom: "-8px" }}
               >
                 everything
-              </em>
-              <br />
-              behind it.
+              </span>
+              <span style={{ display: "block" }}>behind it.</span>
             </h1>
           </motion.div>
           <motion.div variants={itemVariants}>
@@ -340,20 +371,24 @@ export default function Hero() {
               <a
                 href="#"
                 style={{
+                  background: primaryHover
+                    ? "linear-gradient(135deg, #d4a020 0%, #b98b36 50%, #c17a4a 100%)"
+                    : "linear-gradient(135deg, #c17a4a 0%, #b98b36 50%, #d4a020 100%)",
+                  color: "#0a0806",
                   fontFamily: "var(--font-inter)",
                   fontSize: "10.5px",
                   fontWeight: 500,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: "#0a0806",
-                  background: primaryHover ? "var(--accent-light)" : "var(--accent)",
-                  padding: "14px 32px",
+                  padding: "13px 32px",
                   borderRadius: "2px",
                   border: "none",
-                  cursor: "pointer",
                   textDecoration: "none",
                   display: "inline-block",
-                  transition: "background 0.25s ease",
+                  transition: "background 0.4s ease, box-shadow 0.3s ease",
+                  boxShadow: primaryHover
+                    ? "0 0 24px rgba(185,139,54,0.4), 0 0 48px rgba(185,139,54,0.15)"
+                    : "0 0 12px rgba(185,139,54,0.15)",
                 }}
                 onMouseEnter={() => setPrimaryHover(true)}
                 onMouseLeave={() => setPrimaryHover(false)}
@@ -363,22 +398,23 @@ export default function Hero() {
               <a
                 href="#"
                 style={{
+                  background: "transparent",
+                  color: secondaryHover
+                    ? "var(--text-heading)"
+                    : "rgba(244,241,234,0.65)",
                   fontFamily: "var(--font-inter)",
                   fontSize: "10.5px",
                   fontWeight: 400,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: secondaryHover ? "var(--text-primary)" : "var(--text-secondary)",
-                  background: "transparent",
-                  padding: "14px 32px",
+                  padding: "13px 32px",
                   borderRadius: "2px",
                   border: secondaryHover
-                    ? "1px solid rgba(193,122,74,0.5)"
-                    : "1px solid rgba(255,255,255,0.12)",
-                  cursor: "pointer",
+                    ? "1px solid rgba(185,139,54,0.5)"
+                    : "1px solid rgba(255,255,255,0.1)",
                   textDecoration: "none",
                   display: "inline-block",
-                  transition: "border-color 0.25s ease, color 0.25s ease",
+                  transition: "all 0.3s ease",
                 }}
                 onMouseEnter={() => setSecondaryHover(true)}
                 onMouseLeave={() => setSecondaryHover(false)}
@@ -390,6 +426,7 @@ export default function Hero() {
         </motion.div>
         <div aria-hidden="true" />
       </Container>
+
       <div
         style={{
           position: "absolute",
