@@ -172,7 +172,11 @@ export default function WhatWeBelieve() {
             alignItems: "start",
           }}
         >
-          <div ref={leftRef} className="wwb-left" style={{ position: "sticky", top: "100px" }}>
+          <div
+            ref={leftRef}
+            className="wwb-left"
+            style={{ position: "sticky", top: "100px", alignSelf: "start" }}
+          >
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={leftInView ? { opacity: 1, y: 0 } : {}}
@@ -265,7 +269,7 @@ export default function WhatWeBelieve() {
                 onMouseEnter={() => setHoveredItem(i)}
                 onMouseLeave={() => setHoveredItem(null)}
                 style={{
-                  padding: "32px 24px",
+                  padding: "28px 20px",
                   borderTop: i === 0 ? "1px solid var(--border-hairline)" : "none",
                   borderBottom: "1px solid var(--border-hairline)",
                   position: "relative",
@@ -337,6 +341,7 @@ export default function WhatWeBelieve() {
                 >
                   <span
                     style={{
+                      fontSize: "15px",
                       fontWeight: 500,
                       color: hoveredItem === i ? "#e8c97a" : "#d4a020",
                       transition: "color 0.3s ease, text-shadow 0.3s ease",
@@ -347,7 +352,15 @@ export default function WhatWeBelieve() {
                   >
                     {item.bold}{" "}
                   </span>
-                  <span style={{ color: "var(--text-secondary)", fontWeight: 300 }}>{item.rest}</span>
+                  <span
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: 300,
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    {item.rest}
+                  </span>
                 </motion.p>
               </motion.div>
             ))}

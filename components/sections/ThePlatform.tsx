@@ -326,13 +326,13 @@ export default function ThePlatform() {
                 <p
                   style={{
                     fontFamily: "var(--font-inter)",
-                    fontSize: "10px",
-                    letterSpacing: "0.2em",
-                    color: hovered ? "#d4a020" : "rgba(185,139,54,0.55)",
-                    margin: "0 0 18px 0",
-                    textTransform: "uppercase",
+                    fontSize: "11px",
                     fontWeight: 600,
-                    transition: "color 0.3s ease",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "#d4a020",
+                    paddingTop: "4px",
+                    margin: "0 0 18px 0",
                   }}
                 >
                   {f.num}
@@ -340,13 +340,13 @@ export default function ThePlatform() {
                 <p
                   style={{
                     fontFamily: "var(--font-inter)",
-                    fontSize: "14px",
+                    fontSize: "13px",
                     fontWeight: 500,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
                     color: "var(--text-heading)",
                     margin: "0 0 14px 0",
-                    letterSpacing: hovered ? "0.06em" : "0.02em",
                     lineHeight: 1.3,
-                    transition: "color 0.3s ease, letter-spacing 0.3s ease",
                   }}
                 >
                   {f.title}
@@ -354,12 +354,11 @@ export default function ThePlatform() {
                 <p
                   style={{
                     fontFamily: "var(--font-inter)",
-                    fontSize: "13px",
-                    lineHeight: 1.78,
+                    fontSize: "14px",
+                    lineHeight: 1.75,
+                    fontWeight: 300,
                     color: "var(--text-secondary)",
                     margin: 0,
-                    fontWeight: 300,
-                    opacity: 0.7,
                   }}
                 >
                   {f.body}
