@@ -92,6 +92,23 @@ export default function OSPage() {
   return (
     <>
       <style>{`
+        @keyframes osPulse {
+          0%,100% { opacity: 1; }
+          50% { opacity: 0.62; }
+        }
+        @keyframes osShift {
+          0% { background-position: 0% center; }
+          100% { background-position: 200% center; }
+        }
+        .os-title-gradient {
+          background: linear-gradient(90deg, #c17a4a 0%, #b98b36 35%, #e8c97a 55%, #b98b36 75%, #c17a4a 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: osPulse 4s ease-in-out infinite, osShift 7s linear infinite;
+          font-style: italic;
+        }
         @media (max-width: 1023px) {
           .os-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
           .os-hero-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
@@ -186,7 +203,7 @@ export default function OSPage() {
                 </p>
               </motion.div>
 
-              <motion.p
+              <motion.h1
                 initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
                 animate={
                   heroInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
@@ -201,37 +218,14 @@ export default function OSPage() {
                   fontSize: "clamp(48px, 6vw, 80px)",
                   fontWeight: 300,
                   lineHeight: 1.0,
-                  color: "var(--text-heading)",
                   letterSpacing: "-0.03em",
-                  margin: 0,
-                }}
-              >
-                AEDIFICIUM
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
-                animate={
-                  heroInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
-                }
-                transition={{
-                  duration: 1.0,
-                  delay: 0.35,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                style={{
-                  fontFamily: "var(--font-cormorant)",
-                  fontSize: "clamp(48px, 6vw, 80px)",
-                  fontWeight: 300,
-                  fontStyle: "italic",
-                  lineHeight: 1.0,
-                  letterSpacing: "-0.03em",
-                  color: "var(--accent-gold)",
                   margin: "0 0 28px 0",
+                  whiteSpace: "nowrap",
                 }}
               >
-                OS
-              </motion.p>
+                <span style={{ color: "var(--text-heading)" }}>AEDIFICIUM </span>
+                <em className="os-title-gradient">OS</em>
+              </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
