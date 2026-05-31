@@ -21,6 +21,15 @@
     --space-section-desktop: 120px;
     --space-section-mobile: 64px;
     --container-max: 1280px;
+    --font-montserrat-alt1: "Montserrat-Alt1", sans-serif;
+  }
+
+  @font-face {
+    font-family: "Montserrat-Alt1";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/montserrat-alt1/MontserratAlt1-Medium.woff2") format("woff2");
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }

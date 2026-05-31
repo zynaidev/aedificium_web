@@ -121,19 +121,22 @@ export default function Footer() {
       >
         <div className="aed-f-grid">
           <div className="aed-f-col-brand">
-            <p
+            <a
+              href="/"
               style={{
-                fontFamily: "var(--font-inter)",
-                fontSize: "14px",
-                fontWeight: 500,
-                letterSpacing: "0.3em",
+                fontFamily: "var(--font-cormorant)",
+                fontSize: "18px",
+                fontWeight: 400,
+                letterSpacing: "0.22em",
                 color: "var(--text-heading)",
                 marginBottom: "20px",
                 textTransform: "uppercase",
+                textDecoration: "none",
+                display: "block",
               }}
             >
               AEDIFICIUM
-            </p>
+            </a>
             <p
               style={{
                 fontFamily: "var(--font-cormorant)",
@@ -176,13 +179,16 @@ export default function Footer() {
           <div>
             <p className="aed-f-heading">Platform</p>
             <a href="/platform" className="aed-f-link">
-              Capabilities
+              Platform
             </a>
             <a href="/brands" className="aed-f-link">
               Brand Library
             </a>
             <a href="/os" className="aed-f-link">
-              AEDIFICIUM OS
+              OS
+            </a>
+            <a href="/contact" className="aed-f-link">
+              Contact
             </a>
           </div>
 
@@ -215,7 +221,13 @@ export default function Footer() {
               Start a Project →
             </a>
             <a href="/os-login" className="aed-f-link">
-              OS Partner Login
+              Partner Login
+            </a>
+            <a href="/privacy-policy" className="aed-f-link">
+              Privacy Policy
+            </a>
+            <a href="/terms" className="aed-f-link">
+              Terms of Use
             </a>
           </div>
         </div>
@@ -232,32 +244,78 @@ export default function Footer() {
             © 2026 Atelier Aedificium Design Kft. Budapest — Europe.
           </span>
           <ul className="aed-f-legal">
-            {["Privacy Policy", "Cookies Policy", "Imprint"].map((item) => (
-              <li key={item}>
-                <a
-                  href="#"
-                  style={{
-                    fontFamily: "var(--font-inter)",
-                    fontSize: "10px",
-                    color: "var(--text-tertiary)",
-                    textDecoration: "none",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    transition: "color 0.25s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLAnchorElement).style.color =
-                      "var(--text-heading)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLAnchorElement).style.color =
-                      "var(--text-tertiary)";
-                  }}
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
+            <li>
+              <a
+                href="/privacy-policy"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  fontSize: "10px",
+                  color: "var(--text-tertiary)",
+                  textDecoration: "none",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  transition: "color 0.25s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-heading)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-tertiary)";
+                }}
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/cookies-policy"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  fontSize: "10px",
+                  color: "var(--text-tertiary)",
+                  textDecoration: "none",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  transition: "color 0.25s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-heading)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-tertiary)";
+                }}
+              >
+                Cookies Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/imprint"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  fontSize: "10px",
+                  color: "var(--text-tertiary)",
+                  textDecoration: "none",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  transition: "color 0.25s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-heading)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLAnchorElement).style.color =
+                    "var(--text-tertiary)";
+                }}
+              >
+                Imprint
+              </a>
+            </li>
           </ul>
         </div>
       </div>

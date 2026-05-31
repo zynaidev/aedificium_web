@@ -78,6 +78,7 @@ export default function Hero() {
 
   return (
     <section
+      className="hero-section"
       style={{
         position: "relative",
         minHeight: "100svh",
@@ -119,6 +120,66 @@ export default function Hero() {
           padding-bottom: 8px;
           margin-bottom: -8px;
         }
+        @media (max-width: 1023px) {
+          .hero-left-overlay-mobile { display: none !important; }
+          .hero-wall {
+            display: flex !important;
+            width: 50% !important;
+            right: -4% !important;
+            opacity: 0.5 !important;
+          }
+          .hero-left {
+            max-width: 600px !important;
+          }
+        }
+        .hero-left-overlay-mobile {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to right,
+            rgba(10,8,6,0.92) 0%,
+            rgba(10,8,6,0.85) 50%,
+            rgba(10,8,6,0.7) 100%);
+          z-index: 1;
+          pointer-events: none;
+        }
+        @media (max-width: 767px) {
+          .hero-section {
+            min-height: auto !important;
+            padding: 140px 0 100px 0 !important;
+          }
+          .hero-left-overlay-mobile { display: block !important; }
+          .hero-wall {
+            display: flex !important;
+            width: 100% !important;
+            right: 0 !important;
+            left: 0 !important;
+            opacity: 0.25 !important;
+            transform: none !important;
+          }
+          .hero-left {
+            padding: 0 28px !important;
+          }
+          .hero-eyebrow {
+            margin-bottom: 20px !important;
+          }
+          .hero-body-text {
+            margin-top: 24px !important;
+            margin-bottom: 36px !important;
+          }
+          .hero-cta-row {
+            flex-direction: column !important;
+            margin-top: 8px !important;
+            gap: 10px !important;
+          }
+          .hero-cta-row a {
+            width: 100% !important;
+            text-align: center !important;
+            box-sizing: border-box !important;
+          }
+          .hero-vertical-text {
+            display: none !important;
+          }
+        }
       `}</style>
 
       <div
@@ -133,6 +194,7 @@ export default function Hero() {
           backgroundRepeat: "repeat",
         }}
       />
+      <div className="hero-left-overlay-mobile" style={{ display: "none" }} />
       <div
         style={{
           position: "absolute",
@@ -150,6 +212,7 @@ export default function Hero() {
       />
 
       <div
+        className="hero-wall"
         style={{
           position: "absolute",
           top: "-20%",
@@ -250,6 +313,7 @@ export default function Hero() {
       />
 
       <div
+        className="hero-vertical-text"
         style={{
           position: "absolute",
           left: "28px",
@@ -289,9 +353,10 @@ export default function Hero() {
           width: "100%",
         }}
       >
-        <motion.div variants={containerVariants} initial="hidden" animate="show">
+        <motion.div className="hero-left" variants={containerVariants} initial="hidden" animate="show">
           <motion.div variants={itemVariants}>
             <div
+              className="hero-eyebrow"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -353,6 +418,7 @@ export default function Hero() {
           </motion.div>
           <motion.div variants={itemVariants}>
             <p
+              className="hero-body-text"
               style={{
                 fontFamily: "var(--font-inter)",
                 fontSize: "14px",
@@ -367,7 +433,7 @@ export default function Hero() {
             </p>
           </motion.div>
           <motion.div variants={itemVariants}>
-            <div style={{ display: "flex", gap: "16px" }}>
+            <div className="hero-cta-row" style={{ display: "flex", gap: "16px" }}>
               <a
                 href="#"
                 style={{
