@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
-import { supabase } from "@/lib/supabase";
+import { signIn } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function OSLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -29,9 +31,7 @@ export default function OSLoginPage() {
   async function handleForgot(e: React.FormEvent) {
     e.preventDefault();
     setForgotLoading(true);
-    await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: `${window.location.origin}/os-login`,
-    });
+    // Better Auth nem támogat email reset-et alapból — placeholder
     setForgotSent(true);
     setForgotLoading(false);
   }
@@ -40,25 +40,26 @@ export default function OSLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     if (parseInt(captchaAnswer) !== captchaA + captchaB) {
       setCaptchaError(true);
       setLoading(false);
       return;
     }
     setCaptchaError(false);
-    const { data, error } = await supabase.auth.signInWithPassword({
+
+    const { data, error } = await signIn.email({
       email,
       password,
     });
+
     if (error) {
-      setError(error.message);
+      setError(error.message || "Authentication failed");
       setLoading(false);
       return;
     }
-    const role = data.user?.user_metadata?.role;
-    if (role === "admin") window.location.href = "/admin-portal";
-    else if (role === "logistics") window.location.href = "/logistics-portal";
-    else window.location.href = "/os-dashboard";
+
+    router.push("/os-dashboard");
   }
 
   return (
