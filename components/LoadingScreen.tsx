@@ -69,16 +69,17 @@ export default function LoadingScreen() {
               flexWrap: "wrap",
               justifyContent: "center",
               padding: "0 24px",
+              fontFamily: "var(--font-cormorant)",
             }}
           >
             {"AEDIFICIUM".split("").map((letter, i) => (
               <span
                 key={i}
                 style={{
-                  fontFamily: "var(--font-inter)",
+                  fontFamily: "var(--font-cormorant)",
                   fontSize: "clamp(32px, 8vw, 100px)",
-                  fontWeight: 500,
-                  letterSpacing: "clamp(0.08em, 0.2em, 0.2em)",
+                  fontWeight: 400,
+                  letterSpacing: "0.22em",
                   color: "#f0ece6",
                   display: "inline-block",
                   opacity: textVisible ? 1 : 0,

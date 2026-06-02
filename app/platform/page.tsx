@@ -745,7 +745,7 @@ export default function PlatformPage() {
       <section
         className="plt-workflow"
         style={{
-          background: "var(--bg-base)",
+          background: "#150a08",
           borderTop: "1px solid var(--border-hairline)",
           padding: "120px 0",
           position: "relative",
