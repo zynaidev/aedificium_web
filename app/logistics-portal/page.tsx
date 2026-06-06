@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSession, signOut } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import QueueView from './components/QueueView'
@@ -14,11 +14,13 @@ export type Shipment = {
   status: string
   destination_type: string | null
   destination_address: string | null
+  contact_name: string | null
   target_date: string | null
   tracking_number: string | null
   cbm: number | null
   weight_kg: number | null
   pallet_count: number | null
+  package_dimensions: string | null
   notes: string | null
   created_at: string
   project_name: string
@@ -36,18 +38,398 @@ const NAV: { id: Tab; label: string }[] = [
   { id: 'messages', label: 'Messages' },
 ]
 
+const STATUS_OPTIONS = [
+  'Pending',
+  'On Hold',
+  'Processing',
+  'In transit',
+  'Out for Delivery',
+  'Warehouse (AEDIFICIUM)',
+  'Delivered',
+]
+
+type Msg = {
+  id: string
+  sender_name: string
+  sender_role: string
+  message_body: string
+  created_at: string
+}
+
+function ShipmentDetailPanel({
+  shipment,
+  onRefresh,
+}: {
+  shipment: Shipment | null
+  onRefresh: () => Promise<Shipment[]>
+}) {
+  const [cbm, setCbm] = useState('')
+  const [weightKg, setWeightKg] = useState('')
+  const [palletCount, setPalletCount] = useState('')
+  const [packageDimensions, setPackageDimensions] = useState('')
+  const [destinationAddress, setDestinationAddress] = useState('')
+  const [contactName, setContactName] = useState('')
+  const [status, setStatus] = useState('')
+  const [savingCargo, setSavingCargo] = useState(false)
+  const [savingStatus, setSavingStatus] = useState(false)
+  const [cargoMsg, setCargoMsg] = useState('')
+  const [statusMsg, setStatusMsg] = useState('')
+  const [err, setErr] = useState('')
+  const [msgs, setMsgs] = useState<Msg[]>([])
+  const [msgsLoading, setMsgsLoading] = useState(false)
+  const [chatText, setChatText] = useState('')
+  const [sending, setSending] = useState(false)
+  const endRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!shipment) return
+    setCbm(shipment.cbm?.toString() ?? '')
+    setWeightKg(shipment.weight_kg?.toString() ?? '')
+    setPalletCount(shipment.pallet_count?.toString() ?? '')
+    setPackageDimensions(shipment.package_dimensions ?? '')
+    setDestinationAddress(shipment.destination_address ?? '')
+    setContactName(shipment.contact_name ?? '')
+    setStatus(shipment.status)
+    setCargoMsg('')
+    setStatusMsg('')
+    setErr('')
+  }, [shipment])
+
+  useEffect(() => {
+    if (!shipment) {
+      setMsgs([])
+      return
+    }
+    async function load() {
+      setMsgsLoading(true)
+      const res = await fetch(`/api/messages?shipment_id=${shipment!.id}`)
+      if (res.ok) setMsgs(await res.json())
+      setMsgsLoading(false)
+    }
+    load()
+  }, [shipment?.id])
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [msgs])
+
+  async function saveCargo() {
+    if (!shipment) return
+    setSavingCargo(true)
+    setErr('')
+    setCargoMsg('')
+    try {
+      const res = await fetch('/api/admin/shipments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: shipment.id,
+          cbm: cbm ? Number(cbm) : null,
+          weight_kg: weightKg ? Number(weightKg) : null,
+          pallet_count: palletCount ? Number(palletCount) : null,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      setCargoMsg('Cargo updates saved.')
+      await onRefresh()
+    } catch {
+      setErr('Failed to save cargo updates.')
+    } finally {
+      setSavingCargo(false)
+    }
+  }
+
+  async function updateStatus() {
+    if (!shipment) return
+    setSavingStatus(true)
+    setErr('')
+    setStatusMsg('')
+    try {
+      const res = await fetch('/api/admin/shipments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: shipment.id, status }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      setStatusMsg('Status updated.')
+      await onRefresh()
+    } catch {
+      setErr('Failed to update status.')
+    } finally {
+      setSavingStatus(false)
+    }
+  }
+
+  async function sendChat(e: React.FormEvent) {
+    e.preventDefault()
+    if (!shipment || !chatText.trim() || sending) return
+    setSending(true)
+    const res = await fetch('/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shipment_id: shipment.id, message_body: chatText }),
+    })
+    if (res.ok) {
+      const msg = await res.json()
+      setMsgs((p) => [...p, msg])
+      setChatText('')
+    }
+    setSending(false)
+  }
+
+  if (!shipment) {
+    return (
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <p
+          style={{
+            color: 'var(--mid-gray)',
+            fontSize: '0.82rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            textAlign: 'center',
+          }}
+        >
+          Select a manifest from the queue to view secure details.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="eyebrow" style={{ marginBottom: '0.5rem' }}>
+        {shipment.destination_type ?? 'Shipment'}
+      </div>
+      <h2
+        style={{
+          fontFamily: 'var(--fd)',
+          fontSize: '2.5rem',
+          fontWeight: 300,
+          color: 'var(--white)',
+          lineHeight: 1.1,
+          marginBottom: '0.5rem',
+        }}
+      >
+        {shipment.shipment_ref}
+      </h2>
+      <p style={{ fontSize: '0.85rem', color: 'var(--wg)', marginBottom: '2.5rem' }}>
+        {shipment.project_name} · {shipment.ref_number}
+      </p>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '2.5rem',
+          marginBottom: '2rem',
+          paddingBottom: '2rem',
+          borderBottom: '1px solid var(--border)',
+        }}
+      >
+        <div>
+          <div className="lbl" style={{ marginBottom: '1rem' }}>
+            Cargo Specs
+          </div>
+          <label className="lbl">CBM</label>
+          <input
+            className="inp"
+            type="number"
+            step="0.01"
+            min="0"
+            value={cbm}
+            onChange={(e) => setCbm(e.target.value)}
+          />
+          <label className="lbl">Weight kg</label>
+          <input
+            className="inp"
+            type="number"
+            step="0.01"
+            min="0"
+            value={weightKg}
+            onChange={(e) => setWeightKg(e.target.value)}
+          />
+          <label className="lbl">Pallet Count</label>
+          <input
+            className="inp"
+            type="number"
+            min="0"
+            value={palletCount}
+            onChange={(e) => setPalletCount(e.target.value)}
+          />
+          <label className="lbl">Package Dimensions</label>
+          <input
+            className="inp"
+            value={packageDimensions}
+            onChange={(e) => setPackageDimensions(e.target.value)}
+            placeholder="L × W × H"
+          />
+        </div>
+        <div>
+          <div className="lbl" style={{ marginBottom: '1rem' }}>
+            Routing &amp; Access
+          </div>
+          <label className="lbl">Destination Address</label>
+          <input
+            className="inp"
+            value={destinationAddress}
+            onChange={(e) => setDestinationAddress(e.target.value)}
+          />
+          <label className="lbl">Contact Name</label>
+          <input
+            className="inp"
+            value={contactName}
+            onChange={(e) => setContactName(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="btn-g"
+        disabled={savingCargo || savingStatus}
+        onClick={saveCargo}
+        style={{ marginBottom: '2.5rem' }}
+      >
+        {savingCargo ? 'Saving...' : 'Save Cargo Updates'}
+      </button>
+
+      {cargoMsg && (
+        <p style={{ color: 'var(--ok)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+          {cargoMsg}
+        </p>
+      )}
+
+      <div
+        style={{
+          marginBottom: '2.5rem',
+          paddingBottom: '2.5rem',
+          borderBottom: '1px solid var(--border)',
+        }}
+      >
+        <div className="lbl" style={{ marginBottom: '0.75rem' }}>
+          Current Status
+        </div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--bone)', marginBottom: '1rem' }}>
+          {shipment.status}
+        </p>
+        <label className="lbl">Update Status</label>
+        <select className="inp" value={status} onChange={(e) => setStatus(e.target.value)}>
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="btn-p"
+          disabled={savingStatus || savingCargo}
+          onClick={updateStatus}
+        >
+          {savingStatus ? 'Updating...' : 'Update Shipment Status'}
+        </button>
+        {statusMsg && (
+          <p style={{ color: 'var(--ok)', fontSize: '.85rem', marginTop: '1rem' }}>
+            {statusMsg}
+          </p>
+        )}
+      </div>
+
+      {err && (
+        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+          {err}
+        </p>
+      )}
+
+      <div className="eyebrow" style={{ marginBottom: '1rem' }}>
+        Logistics Chat
+      </div>
+      <div className="chat">
+        <div className="chat-msgs">
+          {msgsLoading ? (
+            <div
+              style={{
+                color: 'var(--mg)',
+                fontSize: '.75rem',
+                textAlign: 'center',
+                marginTop: '2rem',
+              }}
+            >
+              Loading messages...
+            </div>
+          ) : msgs.length === 0 ? (
+            <div
+              style={{
+                color: 'var(--mg)',
+                fontSize: '.75rem',
+                textAlign: 'center',
+                marginTop: '2rem',
+              }}
+            >
+              No messages yet.
+            </div>
+          ) : (
+            msgs.map((m) => (
+              <div
+                key={m.id}
+                className={`msg ${m.sender_role === 'logistics' ? 'msg-me' : 'msg-other'}`}
+              >
+                <div>{m.message_body}</div>
+                <div className="msg-meta">
+                  {m.sender_name} ·{' '}
+                  {new Date(m.created_at).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+          <div ref={endRef} />
+        </div>
+        <form className="chat-form" onSubmit={sendChat}>
+          <input
+            className="chat-inp"
+            placeholder="Message architect..."
+            value={chatText}
+            onChange={(e) => setChatText(e.target.value)}
+            required
+          />
+          <button type="submit" className="chat-send" disabled={sending}>
+            {sending ? '...' : 'Send'}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export default function LogisticsPortal() {
   const { data: session, isPending } = useSession()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<Tab>('queue')
   const [shipments, setShipments] = useState<Shipment[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
+
+  const isSplitTab = activeTab === 'queue' || activeTab === 'warehouse'
 
   const fetchShipments = useCallback(async () => {
     const res = await fetch('/api/admin/shipments')
     if (!res.ok) throw new Error('Failed to load')
     const data = await res.json()
     setShipments(data)
+    setSelectedShipment((prev) => {
+      if (!prev) return null
+      return data.find((s: Shipment) => s.id === prev.id) ?? null
+    })
     return data as Shipment[]
   }, [])
 
@@ -74,6 +456,13 @@ export default function LogisticsPortal() {
       .finally(() => setLoading(false))
   }, [isPending, session, fetchShipments])
 
+  function handleTabChange(tab: Tab) {
+    setActiveTab(tab)
+    if (tab !== 'queue' && tab !== 'warehouse') {
+      setSelectedShipment(null)
+    }
+  }
+
   const user = session?.user as { email: string; role?: string } | undefined
   const allowed = user?.role === 'logistics' || user?.role === 'admin'
 
@@ -99,6 +488,14 @@ export default function LogisticsPortal() {
     )
   }
 
+  const listProps = {
+    shipments,
+    loading,
+    selectedShipment,
+    onSelectShipment: setSelectedShipment,
+    onRefresh: fetchShipments,
+  }
+
   return (
     <>
       <style>{STYLES}</style>
@@ -110,7 +507,7 @@ export default function LogisticsPortal() {
               <button
                 key={item.id}
                 className={`aed-nav-btn${activeTab === item.id ? ' active' : ''}`}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabChange(item.id)}
               >
                 {activeTab === item.id && <span className="dot" />}
                 {item.label}
@@ -132,19 +529,23 @@ export default function LogisticsPortal() {
           </div>
         </aside>
 
-        <main className="aed-main">
-          {activeTab === 'queue' ? (
-            <QueueView
-              shipments={shipments}
-              loading={loading}
-              onRefresh={fetchShipments}
-            />
-          ) : activeTab === 'warehouse' ? (
-            <WarehouseView
-              shipments={shipments}
-              loading={loading}
-              onRefresh={fetchShipments}
-            />
+        <main className={isSplitTab ? 'aed-main aed-main-split' : 'aed-main'}>
+          {isSplitTab ? (
+            <div className="split-layout">
+              <div className="split-left">
+                {activeTab === 'queue' ? (
+                  <QueueView {...listProps} />
+                ) : (
+                  <WarehouseView {...listProps} />
+                )}
+              </div>
+              <div className="split-right">
+                <ShipmentDetailPanel
+                  shipment={selectedShipment}
+                  onRefresh={fetchShipments}
+                />
+              </div>
+            </div>
           ) : activeTab === 'calendar' ? (
             <CalendarView shipments={shipments} />
           ) : (
@@ -163,7 +564,7 @@ const STYLES = `
   --bg:#0a0806;--bg-r:#111009;--bg-s:#1a1410;
   --border:rgba(230,226,216,0.07);--border-g:rgba(185,139,54,0.22);
   --accent:#c17a4a;--gold:#b98b36;
-  --white:#f4f1ea;--bone:#e6e2d8;--wg:#9e9484;--mg:#6b6357;
+  --white:#f4f1ea;--bone:#e6e2d8;--wg:#9e9484;--mg:#6b6357;--mid-gray:#6b6357;
   --danger:#a8365a;--ok:#4a7c59;
   --fd:'Cormorant Garamond',Georgia,serif;
   --fu:'Inter',system-ui,sans-serif;
@@ -184,6 +585,10 @@ body{background:var(--bg);color:var(--bone);font-family:var(--fu)}
 .aed-logout{background:none;border:none;color:var(--danger);font-family:var(--fu);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0;transition:opacity .2s}
 .aed-logout:hover{opacity:.7}
 .aed-main{flex:1;padding:4rem 5rem;overflow-x:hidden;min-width:0}
+.aed-main-split{padding:0;overflow:hidden;height:100svh;min-height:0}
+.split-layout{display:grid;grid-template-columns:380px 1fr;height:100%;overflow:hidden}
+.split-left{overflow-y:auto;border-right:1px solid var(--border);padding:1.5rem}
+.split-right{overflow-y:auto;padding:2.5rem 3rem;background:var(--bg)}
 .eyebrow{font-size:0.62rem;color:var(--accent);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:0.75rem}
 .title{font-family:var(--fd);font-size:2.8rem;font-weight:300;color:var(--white);line-height:1.1;margin-bottom:3.5rem}
 .badge{display:inline-block;padding:.3rem .7rem;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;border-radius:20px;border:1px solid var(--accent);color:var(--accent)}
@@ -195,6 +600,7 @@ body{background:var(--bg);color:var(--bone);font-family:var(--fu)}
 .btn-p:disabled{opacity:.4;cursor:not-allowed}
 .btn-g{background:none;border:1px solid var(--border-g);color:var(--bone);padding:.7rem 1.4rem;font-family:var(--fu);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .25s;border-radius:2px}
 .btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-g:disabled{opacity:.4;cursor:not-allowed}
 .btn-l{background:none;border:none;color:var(--bone);font-family:var(--fu);font-size:.72rem;cursor:pointer;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;padding:0;transition:color .2s}
 .btn-l:hover{color:var(--accent)}
 .inp{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(230,226,216,.18);padding:.75rem 0;font-family:var(--fu);font-size:.88rem;color:var(--bone);margin-bottom:1.5rem;transition:border-color .25s;outline:none}
@@ -202,18 +608,8 @@ body{background:var(--bg);color:var(--bone);font-family:var(--fu)}
 .inp::placeholder{color:var(--mg)}
 select.inp option{background:#111009;color:var(--bone)}
 .lbl{display:block;font-size:.58rem;color:var(--wg);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.2rem}
-.row{display:grid;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--border)}
 .row-title{font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:.2rem}
-.row-sub{font-size:.62rem;color:var(--wg);text-transform:uppercase;letter-spacing:.06em}
-.overlay{position:fixed;inset:0;background:rgba(10,8,6,.75);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s}
-.overlay.open{opacity:1;pointer-events:all}
-.panel{position:fixed;top:0;right:-640px;width:600px;max-width:100vw;height:100svh;background:var(--bg-r);border-left:1px solid var(--border-g);z-index:101;display:flex;flex-direction:column;transition:right .4s var(--ease);box-shadow:-20px 0 60px rgba(0,0,0,.6)}
-.panel.open{right:0}
-.panel-hdr{padding:2rem 2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0}
-.panel-body{flex:1;padding:2rem;overflow-y:auto}
-.panel-close{background:none;border:none;color:var(--wg);font-size:1.4rem;cursor:pointer;line-height:1;transition:color .2s;padding:0}
-.panel-close:hover{color:var(--accent)}
-.chat{display:flex;flex-direction:column;height:360px;margin-top:1.5rem}
+.chat{display:flex;flex-direction:column;height:360px;margin-top:0}
 .chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.75rem;padding-bottom:.5rem}
 .chat-msgs::-webkit-scrollbar{width:3px}
 .chat-msgs::-webkit-scrollbar-thumb{background:var(--mg);border-radius:2px}
@@ -226,7 +622,7 @@ select.inp option{background:#111009;color:var(--bone)}
 .chat-send{background:var(--accent);color:#0a0806;border:none;padding:0 1.25rem;font-family:var(--fu);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:opacity .2s;flex-shrink:0}
 .chat-send:hover{opacity:.8}
 .sk{background:linear-gradient(90deg,var(--bg-s) 25%,rgba(255,255,255,.04) 50%,var(--bg-s) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px}
-@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-100% 0}}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border)}
 .cal-hdr{padding:.75rem;font-size:.6rem;color:var(--wg);text-transform:uppercase;letter-spacing:.1em;text-align:right;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg-r)}
 .cal-cell{min-height:110px;padding:.5rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative}
@@ -235,7 +631,7 @@ select.inp option{background:#111009;color:var(--bone)}
 .cal-evt{border-left:2px solid var(--accent);padding:.3rem .4rem;font-size:.6rem;color:var(--bone);margin-bottom:.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-evt.wh{border-left-color:var(--ok);background:rgba(74,124,89,.1)}
 .cal-evt.site{background:rgba(193,122,74,.1)}
-@media(max-width:1100px){.aed-main{padding:3rem 2.5rem}}
+@media(max-width:1100px){.aed-main{padding:3rem 2.5rem}.aed-main-split{padding:0}}
 @media(max-width:768px){
   .aed-wrap{flex-direction:column}
   .aed-sidebar{width:100%;min-width:0;height:auto;position:static;padding:1.25rem 1.5rem}
@@ -243,6 +639,6 @@ select.inp option{background:#111009;color:var(--bone)}
   .aed-nav-btn{font-size:.6rem;padding:.4rem .6rem}
   .aed-main{padding:2rem 1.25rem}
   .title{font-size:2rem}
-  .panel{width:100%;right:-100%}
+  .split-layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
 }
 `

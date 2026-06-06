@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 import { getAuthUser, requireRole } from '@/lib/api-auth'
-import { uploadFile, buildFileKey } from '@/lib/r2'
 
 export async function GET() {
   try {
@@ -42,20 +41,16 @@ export async function POST(req: NextRequest) {
     const item_name   = formData.get('item_name') as string | null
     const issue_type  = formData.get('issue_type') as string | null
     const description = formData.get('description') as string | null
-    const file        = formData.get('file') as File | null
+    const file_url    = formData.get('file_url') as string | null
 
-    if (!item_name || !issue_type || !file) {
-      return NextResponse.json({ error: 'item_name, issue_type and file required' }, { status: 400 })
+    if (!item_name || !issue_type) {
+      return NextResponse.json({ error: 'item_name and issue_type required' }, { status: 400 })
     }
-
-    const key = buildFileKey(user.id, 'claim', file.name)
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const fileUrl = await uploadFile(key, buffer, file.type || 'image/jpeg')
 
     const { rows } = await query(
       `INSERT INTO claims (architect_id, project_id, item_name, issue_type, description, file_url)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [user.id, project_id || null, item_name, issue_type, description || null, fileUrl]
+      [user.id, project_id || null, item_name, issue_type, description || null, file_url || null]
     )
 
     return NextResponse.json(rows[0], { status: 201 })

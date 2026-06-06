@@ -56,6 +56,7 @@ export default function ProjectsView() {
   const [busy, setBusy] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   async function fetchData() {
     setLoading(true)
@@ -90,6 +91,31 @@ export default function ProjectsView() {
       else next.add(id)
       return next
     })
+  }
+
+  async function handleDelete(project: Project) {
+    if (!confirm(`Delete project ${project.name}? This cannot be undone.`)) return
+    setDeletingId(project.id)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/projects', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: project.id }),
+      })
+      if (!res.ok) throw new Error('Failed to delete')
+      setProjects((prev) => prev.filter((p) => p.id !== project.id))
+      setExpanded((prev) => {
+        const next = new Set(prev)
+        next.delete(project.id)
+        return next
+      })
+      await fetchData()
+    } catch {
+      setError('Failed to delete project.')
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -249,6 +275,23 @@ export default function ProjectsView() {
                     <span className={`badge ${statusBadgeClass(p.status)}`}>
                       {p.status.replace('_', ' ')}
                     </span>
+                    <button
+                      type="button"
+                      disabled={deletingId === p.id}
+                      onClick={() => handleDelete(p)}
+                      style={{
+                        background: 'none',
+                        border: '1px solid rgba(168,54,90,0.4)',
+                        color: 'var(--danger)',
+                        fontSize: '0.65rem',
+                        padding: '0.3rem 0.7rem',
+                        cursor: deletingId === p.id ? 'not-allowed' : 'pointer',
+                        borderRadius: '2px',
+                        opacity: deletingId === p.id ? 0.6 : 1,
+                      }}
+                    >
+                      {deletingId === p.id ? 'Deleting...' : 'Delete'}
+                    </button>
                     {p.eta_date && (
                       <span style={{ fontSize: '.65rem', color: 'var(--mg)' }}>
                         ETA {new Date(p.eta_date).toLocaleDateString()}

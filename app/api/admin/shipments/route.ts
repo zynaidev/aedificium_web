@@ -30,63 +30,36 @@ export async function PATCH(req: NextRequest) {
     const user = await getAuthUser()
     requireRole(user, ['admin', 'logistics'])
 
-    const {
-      id,
-      status,
-      cbm,
-      weight_kg,
-      pallet_count,
-      tracking_number,
-      notes,
-      target_date,
-    } = await req.json()
+    const body = await req.json()
+    const { id, ...fields } = body
 
     if (!id) {
       return NextResponse.json({ error: 'id required' }, { status: 400 })
     }
 
-    const updates: string[] = []
-    const values: unknown[] = []
-    let i = 1
+    const allowed = [
+      'status',
+      'cbm',
+      'weight_kg',
+      'pallet_count',
+      'package_dimensions',
+      'tracking_number',
+      'notes',
+      'target_date',
+      'destination_address',
+      'contact_name',
+    ]
 
-    if (status !== undefined) {
-      updates.push(`status = $${i++}`)
-      values.push(status)
-    }
-    if (cbm !== undefined) {
-      updates.push(`cbm = $${i++}`)
-      values.push(cbm)
-    }
-    if (weight_kg !== undefined) {
-      updates.push(`weight_kg = $${i++}`)
-      values.push(weight_kg)
-    }
-    if (pallet_count !== undefined) {
-      updates.push(`pallet_count = $${i++}`)
-      values.push(pallet_count)
-    }
-    if (tracking_number !== undefined) {
-      updates.push(`tracking_number = $${i++}`)
-      values.push(tracking_number)
-    }
-    if (notes !== undefined) {
-      updates.push(`notes = $${i++}`)
-      values.push(notes)
-    }
-    if (target_date !== undefined) {
-      updates.push(`target_date = $${i++}`)
-      values.push(target_date || null)
-    }
+    const updates = Object.entries(fields).filter(([k]) => allowed.includes(k))
 
     if (updates.length === 0) {
       return NextResponse.json({ error: 'No fields to update' }, { status: 400 })
     }
 
-    values.push(id)
-    await query(
-      `UPDATE shipments SET ${updates.join(', ')} WHERE id = $${i}`,
-      values
-    )
+    const setClauses = updates.map(([k], idx) => `${k} = $${idx + 2}`).join(', ')
+    const values = updates.map(([k, v]) => (k === 'target_date' ? v || null : v))
+
+    await query(`UPDATE shipments SET ${setClauses} WHERE id = $1`, [id, ...values])
 
     return NextResponse.json({ success: true })
   } catch (err) {

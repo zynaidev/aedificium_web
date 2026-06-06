@@ -12,6 +12,7 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
   const transit  = projects.flatMap(p => p.shipments).filter(s => s.status.includes('transit')).length
   const quotes   = estimates.filter(e => e.status === 'Action Required: Review Quote').length
   const openCl   = claims.filter(c => c.status === 'Open').length
+  const logistics = projects.reduce((sum, p) => sum + p.shipments.length, 0)
 
   return (
     <div>
@@ -39,14 +40,19 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
       {/* Cards */}
       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'1.5rem'}}>
         {[
-          {n:'01',title:'New Specification',desc:'Upload a Bill of Quantities to begin sourcing and securing consolidated trade estimates.',btn:'Upload BOQ',tab:'estimates' as const},
-          {n:'02',title:'Active Logistics',  desc:'Track the consolidation and delivery timeline of your currently approved specifications.',btn:'View Projects',tab:'projects' as const},
-          {n:'03',title:'Claims & Warranties',desc:'Report damages or missing parts. We handle cross-border resolution with the manufacturer.',btn:'Open Claim',tab:'claims' as const},
+          {n:'01',title:'Active Projects',val:active,desc:'',btn:'View Projects',tab:'projects' as const},
+          {n:'02',title:'Active Logistics',val:logistics,desc:'',btn:'View Shipments',tab:'projects' as const},
+          {n:'03',title:'New Specification',val:null,desc:'Upload a Bill of Quantities to begin sourcing.',btn:'Upload BOQ',tab:'estimates' as const},
         ].map(c => (
           <div key={c.n} className="card">
             <div className="card-num">{c.n}</div>
+            {c.val !== null && (
+              loading
+                ? <div className="sk" style={{height:'2.5rem',width:'3rem',marginBottom:'.75rem'}}/>
+                : <div style={{fontFamily:'var(--fd)',fontSize:'3rem',fontWeight:300,color:'var(--white)',lineHeight:1,marginBottom:'.75rem'}}>{c.val}</div>
+            )}
             <h3 className="card-title">{c.title}</h3>
-            <p className="card-desc">{c.desc}</p>
+            {c.desc && <p className="card-desc">{c.desc}</p>}
             <button className="btn-g" style={{marginTop:'2rem',width:'100%'}} onClick={() => onNavigate(c.tab)}>{c.btn}</button>
           </div>
         ))}

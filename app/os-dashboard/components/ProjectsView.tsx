@@ -143,6 +143,10 @@ export default function ProjectsView({projects,loading,onRefresh}:{projects:Proj
       <div className="eyebrow">Project Tracking</div>
       <h1 className="title">Active Projects</h1>
 
+      <p style={{fontSize:'0.78rem',color:'var(--warm-gray)',fontStyle:'italic',marginBottom:'2rem'}}>
+        To start a new project, upload a BOQ in Estimates & Quotes — your AEDIFICIUM contact will create the project once the specification is reviewed.
+      </p>
+
       {projects.length===0
         ? <p style={{color:'var(--mg)',fontSize:'.88rem'}}>No active projects yet. Your AEDIFICIUM contact will create a project once your first specification is approved.</p>
         : projects.map(p=>(
