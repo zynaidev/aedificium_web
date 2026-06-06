@@ -119,3 +119,22 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const user = await getAuthUser()
+    requireRole(user, ['admin'])
+
+    const { id } = await req.json()
+    if (!id) {
+      return NextResponse.json({ error: 'id required' }, { status: 400 })
+    }
+
+    await query(`DELETE FROM projects WHERE id = $1`, [id])
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    if (err instanceof Response) return err
+    console.error('[/api/admin/projects DELETE]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}

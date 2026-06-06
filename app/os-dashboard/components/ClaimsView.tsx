@@ -1,30 +1,77 @@
 'use client'
 // app/os-dashboard/components/ClaimsView.tsx
 import { useState, useRef } from 'react'
+import { useSession } from '@/lib/auth-client'
 import type { Claim, Project } from '../page'
 
 function badgeClass(s:string){return s==='Resolved'||s==='Closed'?'ok':s==='Open'?'alert':''}
 
+function fileLabel(files: FileList | null | undefined): string {
+  if (!files?.length) return 'Upload Photos or Documents (multiple files allowed)'
+  if (files.length === 1) return files[0].name
+  return `${files.length} files selected`
+}
+
 export default function ClaimsView({claims,projects,loading,onRefresh}:{claims:Claim[];projects:Project[];loading:boolean;onRefresh:()=>void}) {
+  const { data: session } = useSession()
   const [f,setF]=useState({project_id:'',item_name:'',issue_type:'',description:''})
   const [fileName,setFileName]=useState('')
   const [busy,setBusy]=useState(false)
+  const [uploadProgress,setUploadProgress]=useState({n:0,total:0})
   const [msg,setMsg]=useState('')
   const fileRef=useRef<HTMLInputElement>(null)
   const set=(k:string,v:string)=>setF(p=>({...p,[k]:v}))
 
   async function submit(e:React.FormEvent){
     e.preventDefault()
-    if(!fileRef.current?.files?.[0]){setMsg('Please attach a photo or document.');return}
+    const files=fileRef.current?.files
+    if(!files?.length){setMsg('Please attach a photo or document.');return}
+    if(!session?.user?.id){setMsg('Error: Not authenticated.');return}
+
     setBusy(true); setMsg('')
-    const fd=new FormData()
-    Object.entries(f).forEach(([k,v])=>{if(v)fd.append(k,v)})
-    fd.append('file',fileRef.current.files[0])
-    const r=await fetch('/api/claims',{method:'POST',body:fd})
-    if(r.ok){setMsg('Claim submitted. AEDIFICIUM will contact you within 48 hours.');setF({project_id:'',item_name:'',issue_type:'',description:''});setFileName('');if(fileRef.current)fileRef.current.value='';onRefresh()}
-    else{const d=await r.json();setMsg(`Error: ${d.error}`)}
-    setBusy(false)
+    const fileList=Array.from(files)
+    const urls:string[]=[]
+
+    try {
+      for(let i=0;i<fileList.length;i++){
+        setUploadProgress({n:i+1,total:fileList.length})
+        const file=fileList[i]
+        const uploadFd=new FormData()
+        uploadFd.append('file',file)
+        uploadFd.append('type','claim')
+        uploadFd.append('userId',session.user.id)
+        const uploadRes=await fetch('/api/upload',{method:'POST',body:uploadFd})
+        if(!uploadRes.ok)throw new Error('Upload failed')
+        const {url}=await uploadRes.json()
+        urls.push(url)
+      }
+
+      const fd=new FormData()
+      Object.entries(f).forEach(([k,v])=>{if(v)fd.append(k,v)})
+      fd.append('file_url',urls.join(','))
+
+      const r=await fetch('/api/claims',{method:'POST',body:fd})
+      if(r.ok){
+        setMsg('Claim submitted. AEDIFICIUM will contact you within 48 hours.')
+        setF({project_id:'',item_name:'',issue_type:'',description:''})
+        setFileName('')
+        if(fileRef.current)fileRef.current.value=''
+        onRefresh()
+      }else{
+        const d=await r.json()
+        setMsg(`Error: ${d.error}`)
+      }
+    }catch{
+      setMsg('Error: Upload failed.')
+    }finally{
+      setBusy(false)
+      setUploadProgress({n:0,total:0})
+    }
   }
+
+  const submitLabel=busy&&uploadProgress.total>0
+    ?`Uploading ${uploadProgress.n} of ${uploadProgress.total}...`
+    :busy?'Submitting...':'Submit to AEDIFICIUM'
 
   return (
     <div>
@@ -52,10 +99,10 @@ export default function ClaimsView({claims,projects,loading,onRefresh}:{claims:C
             <label className="lbl">Description</label>
             <input className="inp" placeholder="Brief description" value={f.description} onChange={e=>set('description',e.target.value)}/>
             <div className="dz-wrap">
-              <input type="file" id="cl-f" ref={fileRef} accept="image/*,.pdf" required onChange={e=>setFileName(e.target.files?.[0]?.name??'')}/>
-              <label htmlFor="cl-f" className="dz"><div className="dz-icon">＋</div><div className="dz-text">{fileName||'Upload Photo or PDF (max 5MB)'}</div></label>
+              <input type="file" id="cl-f" ref={fileRef} accept="image/*,.pdf" multiple required onChange={e=>setFileName(fileLabel(e.target.files))}/>
+              <label htmlFor="cl-f" className="dz"><div className="dz-icon">＋</div><div className="dz-text">{fileName||'Upload Photos or Documents (multiple files allowed)'}</div></label>
             </div>
-            <button type="submit" className="btn-p" style={{width:'100%'}} disabled={busy}>{busy?'Submitting...':'Submit to AEDIFICIUM'}</button>
+            <button type="submit" className="btn-p" style={{width:'100%'}} disabled={busy}>{submitLabel}</button>
             {msg&&<div style={{marginTop:'1rem',padding:'1rem',border:`1px solid ${msg.startsWith('Error')?'var(--danger)':'var(--border-g)'}`,color:msg.startsWith('Error')?'var(--danger)':'var(--bone)',fontSize:'.78rem',textAlign:'center',lineHeight:1.5}}>{msg}</div>}
           </form>
         </div>

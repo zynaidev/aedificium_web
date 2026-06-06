@@ -67,9 +67,15 @@ export async function DELETE(req: NextRequest) {
     const user = await getAuthUser()
     requireRole(user, ['admin'])
 
-    const { id } = await req.json()
+    const { id, estimate_id } = await req.json()
+
+    if (estimate_id) {
+      await query(`DELETE FROM quote_items WHERE estimate_id = $1`, [estimate_id])
+      return NextResponse.json({ success: true })
+    }
+
     if (!id) {
-      return NextResponse.json({ error: 'id required' }, { status: 400 })
+      return NextResponse.json({ error: 'id or estimate_id required' }, { status: 400 })
     }
 
     await query(`DELETE FROM quote_items WHERE id = $1`, [id])
