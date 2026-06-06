@@ -24,7 +24,15 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: 'string',
-        defaultValue: 'architect',
+        defaultValue: 'designer',
+      },
+      studio_name: {
+        type: 'string',
+        required: false,
+      },
+      is_active: {
+        type: 'boolean',
+        defaultValue: true,
       },
     },
   },
