@@ -4,28 +4,34 @@ import { useEffect, useState } from 'react'
 
 type Brand = { id:number; name:string; category:string; url:string|null }
 
-const FILTERS=[
-  {label:'All',value:'all'},
-  {label:'Indoor Furniture',value:'Indoor Furniture'},
-  {label:'Outdoor Furniture',value:'Outdoor Furniture'},
-  {label:'Lighting',value:'Lighting'},
-  {label:'Bathroom & Sanitary',value:'Bathroom Furniture, Tapware and Sanitaryware'},
-  {label:'Tiling & Flooring',value:'Tiling and Flooring'},
-  {label:'Decor & Textiles',value:'Decor, Textiles, Upholstery and Wallcoverings'},
-  {label:'Kitchens',value:'Kitchens'},
-  {label:'Office',value:'Office Furniture'},
-  {label:'Doors & Storage',value:'Doors and Storage Systems'},
-  {label:'Natural Stone',value:'Natural Stone'},
-]
+type Filter = { label: string; value: string }
+
+function toTitleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
 
 export default function BrandsView() {
   const [brands,setBrands]=useState<Brand[]>([])
+  const [filters,setFilters]=useState<Filter[]>([{label:'All',value:'all'}])
   const [filter,setFilter]=useState('all')
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState('')
 
   useEffect(()=>{
     fetch('/api/brands').then(r=>r.json()).then(d=>{setBrands(d);setLoading(false)}).catch(()=>{setError('Failed to load brand network.');setLoading(false)})
+    fetch('/api/brands?categories=true')
+      .then(r=>r.json())
+      .then((cats:string[])=>{
+        setFilters([
+          {label:'All',value:'all'},
+          ...cats.map((cat)=>({label:toTitleCase(cat),value:cat})),
+        ])
+      })
+      .catch(()=>{})
   },[])
 
   const filtered=filter==='all'?brands:brands.filter(b=>b.category===filter)
@@ -36,7 +42,7 @@ export default function BrandsView() {
       <h1 className="title">Brand Library</h1>
 
       <div style={{display:'flex',flexWrap:'wrap',gap:'.5rem 2rem',paddingBottom:'1.5rem',marginBottom:'2.5rem',borderBottom:'1px solid var(--border)'}}>
-        {FILTERS.map(f=>(
+        {filters.map(f=>(
           <button key={f.value} onClick={()=>setFilter(f.value)} style={{background:'none',border:'none',padding:'0 0 .5rem 0',fontFamily:'var(--fu)',fontSize:'.68rem',letterSpacing:'.14em',textTransform:'uppercase',color:filter===f.value?'var(--bone)':'var(--wg)',cursor:'pointer',transition:'color .25s',position:'relative'}}>
             {f.label}
             {filter===f.value&&<div style={{position:'absolute',bottom:0,left:0,right:0,height:'1.5px',background:'linear-gradient(90deg,var(--accent),var(--gold))'}}/>}
@@ -68,7 +74,7 @@ export default function BrandsView() {
 
       {!loading&&!error&&(
         <div style={{marginTop:'2.5rem',paddingTop:'1.5rem',borderTop:'1px solid var(--border)',fontSize:'.65rem',color:'var(--mg)',letterSpacing:'.1em',textTransform:'uppercase'}}>
-          {filtered.length} brand{filtered.length!==1?'s':''} in network{filter!=='all'&&` · ${FILTERS.find(f=>f.value===filter)?.label}`}
+          {filtered.length} brand{filtered.length!==1?'s':''} in network{filter!=='all'&&` · ${filters.find(f=>f.value===filter)?.label}`}
         </div>
       )}
     </div>

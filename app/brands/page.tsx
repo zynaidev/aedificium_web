@@ -12,20 +12,13 @@ interface Brand {
   url: string;
 }
 
-const CATEGORIES = [
-  { label: "All", value: "all" },
-  { label: "Indoor Furniture", value: "Indoor furniture" },
-  { label: "Outdoor Furniture", value: "Outdoor furniture" },
-  { label: "Lighting", value: "Lighting" },
-  { label: "Bathroom & Sanitary", value: "Bathroom furniture, tapware and sanitaryware" },
-  { label: "Tiling & Flooring", value: "Tiling and flooring" },
-  { label: "Decor & Textiles", value: "Decor, textiles, upholstery and wallcoverings" },
-  { label: "Kitchens", value: "Kitchens" },
-  { label: "Office", value: "Office furniture" },
-  { label: "Doors & Storage", value: "Doors and storage systems" },
-  { label: "Natural Stone", value: "Natural stone" },
-  { label: "Electrical", value: "Electrical components" },
-];
+function toTitleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 function getSpanStyle(index: number): React.CSSProperties {
   if (index % 11 === 0) return { gridColumn: "span 2", gridRow: "span 2" };
@@ -39,7 +32,7 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [categories, setCategories] = useState(CATEGORIES);
+  const [categories, setCategories] = useState([{ label: "All", value: "all" }]);
 
   useEffect(() => {
     fetch("/api/brands")
@@ -57,23 +50,10 @@ export default function BrandsPage() {
     fetch("/api/brands?categories=true")
       .then((res) => res.json())
       .then((cats: string[]) => {
-        const dynamic = [
+        setCategories([
           { label: "All", value: "all" },
-          ...cats.map((cat) => ({
-            label: cat
-              .replace("furniture, tapware and sanitaryware", "& Sanitary")
-              .replace(", textiles, upholstery and wallcoverings", " & Textiles")
-              .replace(" and storage systems", " & Storage")
-              .replace(" and flooring", " & Flooring")
-              .replace("Indoor furniture", "Indoor Furniture")
-              .replace("Outdoor furniture", "Outdoor Furniture")
-              .replace("Office furniture", "Office")
-              .replace("Natural stone", "Natural Stone")
-              .replace("Electrical components", "Electrical"),
-            value: cat,
-          })),
-        ];
-        setCategories(dynamic);
+          ...cats.map((cat) => ({ label: toTitleCase(cat), value: cat })),
+        ]);
       })
       .catch(() => {});
   }, []);
