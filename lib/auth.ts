@@ -1,4 +1,5 @@
 import { betterAuth } from 'better-auth';
+import { admin } from 'better-auth/plugins';
 import { kyselyAdapter } from '@better-auth/kysely-adapter';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
@@ -36,4 +37,5 @@ export const auth = betterAuth({
       },
     },
   },
+  plugins: [admin()],
 });
