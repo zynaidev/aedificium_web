@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const protectedRoutes = ['/os-dashboard'];
+const protectedRoutes: Record<string, string[]> = {
+  '/os-dashboard':    ['designer', 'admin', 'architect'],
+  '/admin-portal':    ['admin'],
+  '/logistics-portal':['logistics', 'admin'],
+};
+
 const authRoutes = ['/os-login'];
 
 export async function proxy(request: NextRequest) {
@@ -10,15 +15,17 @@ export async function proxy(request: NextRequest) {
     request.cookies.get('better-auth.session_token') ||
     request.cookies.get('__Secure-better-auth.session_token');
 
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  const isProtected = Object.keys(protectedRoutes).some(r => pathname.startsWith(r));
+  const isAuthRoute = authRoutes.some(r => pathname.startsWith(r));
 
+  // Nem bejelentkezett → login-ra
   if (isProtected && !sessionCookie) {
-    return NextResponse.redirect(new URL('/os-login', request.url));
+    const url = new URL('/os-login', request.url);
+    url.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(url);
   }
 
+  // Már bejelentkezett → ne menjen a login oldalra
   if (isAuthRoute && sessionCookie) {
     return NextResponse.redirect(new URL('/os-dashboard', request.url));
   }
@@ -27,5 +34,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/os-dashboard/:path*', '/os-login'],
+  matcher: [
+    '/os-dashboard/:path*',
+    '/admin-portal/:path*',
+    '/logistics-portal/:path*',
+    '/os-login',
+  ],
 };

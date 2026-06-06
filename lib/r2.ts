@@ -36,3 +36,13 @@ export async function getSignedDownloadUrl(key: string): Promise<string> {
     { expiresIn: 3600 }
   );
 }
+
+// Kulcs generátor — egyedi fájlnevet hoz létre R2-n
+export function buildFileKey(
+  userId: string,
+  type: 'boq' | 'invoice' | 'claim',
+  originalFilename: string
+): string {
+  const ext = originalFilename.split('.').pop()?.toLowerCase() ?? 'bin';
+  return `${userId}/${type}_${Date.now()}.${ext}`;
+}
