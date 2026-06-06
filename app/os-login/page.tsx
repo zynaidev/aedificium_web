@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
-import { signIn } from "@/lib/auth-client";
+import { authClient, signIn } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 export default function OSLoginPage() {
@@ -59,7 +59,11 @@ export default function OSLoginPage() {
       return;
     }
 
-    router.push("/os-dashboard");
+    const sessionRes = await authClient.getSession();
+    const role = (sessionRes?.data?.user as { role?: string })?.role;
+    if (role === "admin") router.push("/admin-portal");
+    else if (role === "logistics") router.push("/logistics-portal");
+    else router.push("/os-dashboard");
   }
 
   return (

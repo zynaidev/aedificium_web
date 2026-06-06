@@ -3,6 +3,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useSession, signOut } from '@/lib/auth-client'
+import type { OSUser } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import OverviewView from './components/OverviewView'
 import ProjectsView from './components/ProjectsView'
@@ -93,6 +94,23 @@ export default function OSDashboard() {
     if (!isPending && !session) router.replace('/os-login')
   }, [session, isPending, router])
 
+  useEffect(() => {
+    if (isPending || !session) return
+    const user = session.user as unknown as OSUser
+    if (user.role === 'admin') {
+      router.replace('/admin-portal')
+      return
+    }
+    if (user.role === 'logistics') {
+      router.replace('/logistics-portal')
+      return
+    }
+    if (user.is_active === false) {
+      router.replace('/os-login')
+      return
+    }
+  }, [session, isPending, router])
+
   const fetchAll = useCallback(async () => {
     setLoading(true)
     try {
@@ -129,7 +147,7 @@ export default function OSDashboard() {
     )
   }
 
-  const user = session.user as { name: string; email: string; studio_name?: string }
+  const user = session.user as unknown as OSUser
 
   return (
     <>

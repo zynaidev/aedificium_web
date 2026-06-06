@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSession, signOut } from '@/lib/auth-client'
+import type { OSUser } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import QueueView from './components/QueueView'
 import WarehouseView from './components/WarehouseView'
@@ -439,16 +440,22 @@ export default function LogisticsPortal() {
       router.replace('/os-login')
       return
     }
-    const role = (session.user as { role?: string }).role
-    if (role !== 'logistics' && role !== 'admin') {
+    const user = session.user as unknown as OSUser
+    if (user.role !== 'logistics' && user.role !== 'admin') {
       router.replace('/os-dashboard')
+      return
+    }
+    if (user.is_active === false) {
+      router.replace('/os-login')
+      return
     }
   }, [session, isPending, router])
 
   useEffect(() => {
     if (isPending || !session) return
-    const role = (session.user as { role?: string }).role
-    if (role !== 'logistics' && role !== 'admin') return
+    const user = session.user as unknown as OSUser
+    if (user.role !== 'logistics' && user.role !== 'admin') return
+    if (user.is_active === false) return
 
     setLoading(true)
     fetchShipments()
@@ -463,7 +470,7 @@ export default function LogisticsPortal() {
     }
   }
 
-  const user = session?.user as { email: string; role?: string } | undefined
+  const user = session?.user as unknown as OSUser | undefined
   const allowed = user?.role === 'logistics' || user?.role === 'admin'
 
   if (isPending || !session || !allowed) {

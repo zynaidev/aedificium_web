@@ -6,7 +6,8 @@ import { getAuthUser, requireRole } from '@/lib/api-auth'
 export async function GET() {
   try {
     const user = await getAuthUser()
-    const privileged = user.role === 'admin' || user.role === 'logistics'
+    requireRole(user, ['designer', 'admin'])
+    const privileged = user.role === 'admin'
 
     const { rows: projects } = await query(
       privileged

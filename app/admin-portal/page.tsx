@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSession, signOut } from '@/lib/auth-client'
+import type { OSUser } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import AccessRequestsView from './components/AccessRequestsView'
 import UsersView from './components/UsersView'
@@ -51,11 +52,19 @@ export default function AdminPortal() {
       router.replace('/os-login')
       return
     }
-    const role = (session.user as { role?: string }).role
-    if (role !== 'admin') router.replace('/os-dashboard')
+    const user = session.user as unknown as OSUser
+    if (user.role !== 'admin') {
+      if (user.role === 'logistics') router.replace('/logistics-portal')
+      else router.replace('/os-dashboard')
+      return
+    }
+    if (user.is_active === false) {
+      router.replace('/os-login')
+      return
+    }
   }, [session, isPending, router])
 
-  const user = session?.user as { email: string; role?: string } | undefined
+  const user = session?.user as unknown as OSUser | undefined
   const isAdmin = user?.role === 'admin'
 
   if (isPending || !session || !isAdmin) {
