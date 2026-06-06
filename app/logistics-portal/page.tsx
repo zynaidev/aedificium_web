@@ -128,6 +128,9 @@ function ShipmentDetailPanel({
           cbm: cbm ? Number(cbm) : null,
           weight_kg: weightKg ? Number(weightKg) : null,
           pallet_count: palletCount ? Number(palletCount) : null,
+          package_dimensions: packageDimensions || null,
+          destination_address: destinationAddress || null,
+          contact_name: contactName || null,
         }),
       })
       if (!res.ok) throw new Error('Failed')

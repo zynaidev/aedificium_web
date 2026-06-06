@@ -1,6 +1,6 @@
 'use client'
 // app/os-dashboard/components/ProjectsView.tsx
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { Project, Shipment } from '../page'
 
 type Msg = { id:string; sender_name:string; sender_role:string; message_body:string; created_at:string }
@@ -59,13 +59,13 @@ function ChatPanel({shipment,onClose}:{shipment:Shipment;onClose:()=>void}) {
   const [sending,setSending]=useState(false)
   const endRef=useRef<HTMLDivElement>(null)
 
-  async function load(){
+  const load=useCallback(async ()=>{
     setLoading(true)
     const r=await fetch(`/api/messages?shipment_id=${shipment.id}`)
     if(r.ok)setMsgs(await r.json())
     setLoading(false)
-  }
-  useEffect(()=>{load()},[shipment.id])
+  },[shipment.id])
+  useEffect(()=>{load()},[load])
   useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'})},[msgs])
 
   async function send(e: React.FormEvent) {
