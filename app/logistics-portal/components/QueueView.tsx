@@ -34,8 +34,8 @@ export default function QueueView({
 
   return (
     <div>
-      <div className="eyebrow">Operations</div>
-      <h1 className="title" style={{ fontSize: '2rem', marginBottom: '2rem' }}>
+      <div className="os-eyebrow">Operations</div>
+      <h1 className="os-page-title" style={{ fontSize: '2rem', marginBottom: '2rem' }}>
         Active Queue
       </h1>
 
@@ -47,16 +47,16 @@ export default function QueueView({
               style={{
                 padding: '1.25rem',
                 marginBottom: '0.75rem',
-                border: '1px solid var(--border)',
+                border: '1px solid var(--os-border)',
               }}
             >
-              <div className="sk" style={{ height: '1rem', width: '70%', marginBottom: '.5rem' }} />
-              <div className="sk" style={{ height: '.75rem', width: '50%' }} />
+              <div className="os-sk" style={{ height: '1rem', width: '70%', marginBottom: '.5rem' }} />
+              <div className="os-sk" style={{ height: '.75rem', width: '50%' }} />
             </div>
           ))}
         </div>
       ) : queue.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No shipments in the active queue.</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.875rem' }}>No shipments in the active queue.</p>
       ) : (
         queue.map((s) => {
           const selected = selectedShipment?.id === s.id
@@ -64,6 +64,7 @@ export default function QueueView({
             <button
               key={s.id}
               type="button"
+              className="os-card"
               onClick={() => onSelectShipment(s)}
               style={{
                 display: 'block',
@@ -71,22 +72,20 @@ export default function QueueView({
                 textAlign: 'left',
                 padding: '1.25rem',
                 marginBottom: '0.75rem',
-                background: selected ? 'rgba(193,122,74,0.06)' : 'rgba(17,16,9,0.35)',
-                border: `1px solid ${selected ? 'var(--accent)' : 'var(--border)'}`,
                 cursor: 'pointer',
-                transition: 'border-color 0.25s, background 0.25s',
+                borderColor: selected ? 'var(--os-border-gold)' : 'var(--os-border)',
               }}
             >
-              <div className="row-title" style={{ marginBottom: '.35rem' }}>
+              <div className="os-row-title" style={{ marginBottom: '.35rem' }}>
                 {s.shipment_ref}
               </div>
-              <div style={{ fontSize: '.72rem', color: 'var(--bone)', marginBottom: '.35rem' }}>
+              <div style={{ fontSize: '.72rem', color: 'var(--os-bone)', marginBottom: '.35rem' }}>
                 {s.project_name}
               </div>
-              <div style={{ fontSize: '.68rem', color: 'var(--wg)', marginBottom: '.6rem' }}>
+              <div style={{ fontSize: '.68rem', color: 'var(--os-warm-gray)', marginBottom: '.6rem' }}>
                 {s.architect_name}
               </div>
-              <span className={`badge ${badgeClass(s.status)}`}>{s.status}</span>
+              <span className={`os-badge ${badgeClass(s.status)}`}>{s.status}</span>
             </button>
           )
         })

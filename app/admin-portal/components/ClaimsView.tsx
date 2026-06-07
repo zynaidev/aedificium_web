@@ -74,19 +74,11 @@ export default function ClaimsView() {
 
   return (
     <div>
-      <style>{`
-        .row{display:grid;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--border)}
-        .row-title{font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:.2rem}
-        .row-sub{font-size:.62rem;color:var(--wg);text-transform:uppercase;letter-spacing:.06em}
-        .sk{background:linear-gradient(90deg,var(--bg-s) 25%,rgba(255,255,255,.04) 50%,var(--bg-s) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px}
-        @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-      `}</style>
-
-      <div className="eyebrow">Resolution Center</div>
-      <h1 className="title">Claims</h1>
+      <div className="os-eyebrow">Resolution Center</div>
+      <h1 className="os-page-title">Claims</h1>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -94,48 +86,48 @@ export default function ClaimsView() {
       {loading ? (
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="row" style={{ gridTemplateColumns: '1fr' }}>
+            <div key={i} className="os-row" style={{ gridTemplateColumns: '1fr' }}>
               <div
-                className="sk"
+                className="os-sk"
                 style={{ height: '1.2rem', width: '40%', marginBottom: '.75rem' }}
               />
-              <div className="sk" style={{ height: '.8rem', width: '60%' }} />
+              <div className="os-sk" style={{ height: '.8rem', width: '60%' }} />
             </div>
           ))}
         </div>
       ) : claims.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No claims filed yet.</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>No claims filed yet.</p>
       ) : (
         <div>
           {claims.map((c) => (
             <div
               key={c.id}
-              className="row"
+              className="os-row"
               style={{
                 gridTemplateColumns: '2fr 1.2fr 1fr auto',
                 alignItems: 'center',
               }}
             >
               <div>
-                <div className="row-title">{c.item_name}</div>
-                <div className="row-sub" style={{ marginBottom: '.35rem' }}>
+                <div className="os-row-title">{c.item_name}</div>
+                <div className="os-row-sub" style={{ marginBottom: '.35rem' }}>
                   {c.issue_type}
                 </div>
-                <div style={{ fontSize: '.75rem', color: 'var(--wg)', marginBottom: '.35rem' }}>
+                <div style={{ fontSize: '.75rem', color: 'var(--os-warm-gray)', marginBottom: '.35rem' }}>
                   {c.architect_name} · {c.architect_email}
                 </div>
-                <div style={{ fontSize: '.7rem', color: 'var(--mg)' }}>
+                <div style={{ fontSize: '.7rem', color: 'var(--os-mid-gray)' }}>
                   Project: {c.project_name ?? '—'}
                 </div>
-                <div style={{ fontSize: '.65rem', color: 'var(--mg)', marginTop: '.35rem' }}>
+                <div style={{ fontSize: '.65rem', color: 'var(--os-mid-gray)', marginTop: '.35rem' }}>
                   Filed {new Date(c.created_at).toLocaleDateString()}
                 </div>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-                <span className={`badge ${badgeClass(c.status)}`}>{c.status}</span>
+                <span className={`os-badge ${badgeClass(c.status)}`}>{c.status}</span>
                 <select
-                  className="inp"
+                  className="os-input"
                   style={{ marginBottom: 0, fontSize: '.72rem', padding: '.4rem 0' }}
                   value={c.status}
                   disabled={updatingId === c.id}
@@ -153,14 +145,14 @@ export default function ClaimsView() {
                 {c.file_url ? (
                   <button
                     type="button"
-                    className="btn-l"
+                    className="os-btn-link"
                     style={{ fontSize: '.65rem' }}
                     onClick={() => window.open(c.file_url!, '_blank')}
                   >
                     View Evidence ↗
                   </button>
                 ) : (
-                  <span style={{ fontSize: '.65rem', color: 'var(--mg)' }}>—</span>
+                  <span style={{ fontSize: '.65rem', color: 'var(--os-mid-gray)' }}>—</span>
                 )}
               </div>
             </div>

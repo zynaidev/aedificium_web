@@ -64,11 +64,11 @@ export default function AccessRequestsView() {
 
   return (
     <div>
-      <div className="eyebrow">Onboarding Queue</div>
-      <h1 className="title">Access Requests</h1>
+      <div className="os-eyebrow">Onboarding Queue</div>
+      <h1 className="os-page-title">Access Requests</h1>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -76,51 +76,51 @@ export default function AccessRequestsView() {
       {loading ? (
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="row" style={{ gridTemplateColumns: '1fr' }}>
-              <div className="sk" style={{ height: '1.2rem', width: '40%', marginBottom: '.75rem' }} />
-              <div className="sk" style={{ height: '.8rem', width: '60%' }} />
+            <div key={i} className="os-row" style={{ gridTemplateColumns: '1fr' }}>
+              <div className="os-sk" style={{ height: '1.2rem', width: '40%', marginBottom: '.75rem' }} />
+              <div className="os-sk" style={{ height: '.8rem', width: '60%' }} />
             </div>
           ))}
         </div>
       ) : requests.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No access requests yet.</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>No access requests yet.</p>
       ) : (
         <div>
           {requests.map((r) => (
             <div
               key={r.id}
-              className="row"
+              className="os-row"
               style={{ gridTemplateColumns: '1fr auto', alignItems: 'center' }}
             >
               <div>
-                <div className="row-title">{r.name}</div>
-                <div className="row-sub" style={{ marginBottom: '.5rem' }}>
+                <div className="os-row-title">{r.name}</div>
+                <div className="os-row-sub" style={{ marginBottom: '.5rem' }}>
                   {r.email} · {r.studio}
                 </div>
-                <div style={{ fontSize: '.75rem', color: 'var(--wg)', marginBottom: '.5rem' }}>
+                <div style={{ fontSize: '.75rem', color: 'var(--os-warm-gray)', marginBottom: '.5rem' }}>
                   {r.project_type}
                   {r.location ? ` · ${r.location}` : ''}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span className={`badge ${badgeClass(r.status)}`}>{r.status}</span>
-                  <span style={{ fontSize: '.65rem', color: 'var(--mg)' }}>
+                  <span className={`os-badge ${badgeClass(r.status)}`}>{r.status}</span>
+                  <span style={{ fontSize: '.65rem', color: 'var(--os-mid-gray)' }}>
                     {new Date(r.created_at).toLocaleDateString()}
                   </span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '.75rem', flexShrink: 0 }}>
                 <button
-                  className="btn-p"
+                  className="os-btn-primary"
                   disabled={updatingId === r.id || r.status === 'approved'}
                   onClick={() => updateStatus(r.id, 'approved')}
                 >
                   Approve
                 </button>
                 <button
-                  className="btn-l"
+                  className="os-btn-link"
                   disabled={updatingId === r.id || r.status === 'rejected'}
                   onClick={() => updateStatus(r.id, 'rejected')}
-                  style={{ color: 'var(--danger)', textDecorationColor: 'var(--danger)' }}
+                  style={{ color: 'var(--os-danger)', textDecorationColor: 'var(--os-danger)' }}
                 >
                   Reject
                 </button>

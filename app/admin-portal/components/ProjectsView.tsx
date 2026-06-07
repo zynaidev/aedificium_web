@@ -145,12 +145,12 @@ export default function ProjectsView() {
 
   return (
     <div>
-      <div className="eyebrow">Project Management</div>
-      <h1 className="title">Projects</h1>
+      <div className="os-eyebrow">Project Management</div>
+      <h1 className="os-page-title">Projects</h1>
 
       <div
         style={{
-          border: '1px solid var(--border)',
+          border: '1px solid var(--os-border)',
           padding: '2rem',
           marginBottom: '3rem',
           background: 'rgba(17,16,9,.3)',
@@ -158,25 +158,25 @@ export default function ProjectsView() {
       >
         <div
           style={{
-            fontFamily: 'var(--fd)',
+            fontFamily: 'var(--os-fd)',
             fontSize: '1.2rem',
-            color: 'var(--white)',
+            color: 'var(--os-white)',
             marginBottom: '1.5rem',
           }}
         >
           Create New Project
         </div>
         <form onSubmit={handleSubmit}>
-          <label className="lbl">Project Name</label>
+          <label className="os-input-label">Project Name</label>
           <input
-            className="inp"
+            className="os-input"
             value={form.name}
             onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
             required
           />
-          <label className="lbl">Architect</label>
+          <label className="os-input-label">Architect</label>
           <select
-            className="inp"
+            className="os-input"
             value={form.architect_id}
             onChange={(e) =>
               setForm((p) => ({ ...p, architect_id: e.target.value }))
@@ -192,35 +192,35 @@ export default function ProjectsView() {
               </option>
             ))}
           </select>
-          <label className="lbl">Studio Name</label>
+          <label className="os-input-label">Studio Name</label>
           <input
-            className="inp"
+            className="os-input"
             value={form.studio_name}
             onChange={(e) =>
               setForm((p) => ({ ...p, studio_name: e.target.value }))
             }
           />
-          <label className="lbl">ETA Date</label>
+          <label className="os-input-label">ETA Date</label>
           <input
             type="date"
-            className="inp"
+            className="os-input"
             style={{ colorScheme: 'dark' }}
             value={form.eta_date}
             onChange={(e) => setForm((p) => ({ ...p, eta_date: e.target.value }))}
           />
-          <button type="submit" className="btn-p" disabled={busy}>
+          <button type="submit" className="os-btn-primary" disabled={busy}>
             {busy ? 'Creating...' : 'Create Project'}
           </button>
         </form>
         {success && (
-          <p style={{ color: 'var(--ok)', fontSize: '.85rem', marginTop: '1rem' }}>
+          <p style={{ color: 'var(--os-success)', fontSize: '.85rem', marginTop: '1rem' }}>
             {success}
           </p>
         )}
       </div>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -228,26 +228,26 @@ export default function ProjectsView() {
       {loading ? (
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="row" style={{ gridTemplateColumns: '1fr' }}>
+            <div key={i} className="os-row" style={{ gridTemplateColumns: '1fr' }}>
               <div
-                className="sk"
+                className="os-sk"
                 style={{ height: '1.2rem', width: '40%', marginBottom: '.75rem' }}
               />
-              <div className="sk" style={{ height: '.8rem', width: '60%' }} />
+              <div className="os-sk" style={{ height: '.8rem', width: '60%' }} />
             </div>
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No projects yet.</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>No projects yet.</p>
       ) : (
         <div>
           {projects.map((p) => (
             <div
               key={p.id}
-              className="row"
+              className="os-row"
               style={{
                 gridTemplateColumns: '1fr',
-                border: '1px solid var(--border)',
+                border: '1px solid var(--os-border)',
                 padding: '1.5rem',
                 marginBottom: '1rem',
                 background: 'rgba(17,16,9,.3)',
@@ -263,16 +263,16 @@ export default function ProjectsView() {
                 }}
               >
                 <div>
-                  <div className="row-title">{p.name}</div>
-                  <div className="row-sub" style={{ marginBottom: '.5rem' }}>
+                  <div className="os-row-title">{p.name}</div>
+                  <div className="os-row-sub" style={{ marginBottom: '.5rem' }}>
                     {p.ref_number}
                   </div>
-                  <div style={{ fontSize: '.75rem', color: 'var(--wg)', marginBottom: '.5rem' }}>
+                  <div style={{ fontSize: '.75rem', color: 'var(--os-warm-gray)', marginBottom: '.5rem' }}>
                     {p.architect_name} · {p.architect_email}
                     {p.studio_name ? ` · ${p.studio_name}` : ''}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                    <span className={`badge ${statusBadgeClass(p.status)}`}>
+                    <span className={`os-badge ${statusBadgeClass(p.status)}`}>
                       {p.status.replace('_', ' ')}
                     </span>
                     <button
@@ -282,7 +282,7 @@ export default function ProjectsView() {
                       style={{
                         background: 'none',
                         border: '1px solid rgba(168,54,90,0.4)',
-                        color: 'var(--danger)',
+                        color: 'var(--os-danger)',
                         fontSize: '0.65rem',
                         padding: '0.3rem 0.7rem',
                         cursor: deletingId === p.id ? 'not-allowed' : 'pointer',
@@ -293,13 +293,13 @@ export default function ProjectsView() {
                       {deletingId === p.id ? 'Deleting...' : 'Delete'}
                     </button>
                     {p.eta_date && (
-                      <span style={{ fontSize: '.65rem', color: 'var(--mg)' }}>
+                      <span style={{ fontSize: '.65rem', color: 'var(--os-mid-gray)' }}>
                         ETA {new Date(p.eta_date).toLocaleDateString()}
                       </span>
                     )}
                     <button
                       type="button"
-                      className="btn-l"
+                      className="os-btn-link"
                       onClick={() => toggleExpanded(p.id)}
                       style={{ fontSize: '.65rem' }}
                     >
@@ -311,24 +311,24 @@ export default function ProjectsView() {
               </div>
 
               {expanded.has(p.id) && (
-                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--os-border)' }}>
                   {p.shipments.length === 0 ? (
-                    <p style={{ color: 'var(--mg)', fontSize: '.75rem' }}>No shipments yet.</p>
+                    <p style={{ color: 'var(--os-mid-gray)', fontSize: '.75rem' }}>No shipments yet.</p>
                   ) : (
                     p.shipments.map((s) => (
                       <div
                         key={s.id}
                         style={{
                           padding: '.75rem 0',
-                          borderBottom: '1px solid var(--border)',
+                          borderBottom: '1px solid var(--os-border)',
                           fontSize: '.78rem',
-                          color: 'var(--bone)',
+                          color: 'var(--os-bone)',
                         }}
                       >
-                        <div style={{ fontFamily: 'var(--fd)', color: 'var(--white)' }}>
+                        <div style={{ fontFamily: 'var(--os-fd)', color: 'var(--os-white)' }}>
                           {s.shipment_ref}
                         </div>
-                        <div className="row-sub">
+                        <div className="os-row-sub">
                           {s.status}
                           {s.destination_type ? ` · ${s.destination_type}` : ''}
                           {s.target_date
@@ -336,7 +336,7 @@ export default function ProjectsView() {
                             : ''}
                         </div>
                         {s.destination_address && (
-                          <div style={{ fontSize: '.7rem', color: 'var(--mg)', marginTop: '.25rem' }}>
+                          <div style={{ fontSize: '.7rem', color: 'var(--os-mid-gray)', marginTop: '.25rem' }}>
                             {s.destination_address}
                           </div>
                         )}

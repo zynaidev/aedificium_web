@@ -40,10 +40,10 @@ type EditableRow = {
 
 const INPUT_STYLE: React.CSSProperties = {
   background: 'transparent',
-  border: '1px solid rgba(230,226,216,0.2)',
-  color: 'var(--bone)',
+  border: '1px solid var(--os-border)',
+  color: 'var(--os-bone)',
   padding: '0.6rem',
-  fontFamily: 'var(--fu)',
+  fontFamily: 'var(--os-fu)',
   fontSize: '0.82rem',
   width: '100%',
 }
@@ -252,7 +252,7 @@ function SmartLedgerEditor({
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'var(--bg)',
+        background: 'var(--os-bg)',
         zIndex: 200,
         overflowY: 'auto',
         padding: '4rem 5rem',
@@ -262,37 +262,28 @@ function SmartLedgerEditor({
         <button
           type="button"
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            background: 'none',
-            border: 'none',
-            color: 'var(--wg)',
-            fontSize: '1.6rem',
-            cursor: 'pointer',
-            lineHeight: 1,
-          }}
+          className="os-panel-close"
+          style={{ position: 'absolute', top: 0, right: 0, fontSize: '1.6rem' }}
         >
           ×
         </button>
 
-        <div className="eyebrow" style={{ marginBottom: '0.5rem' }}>
+        <div className="os-eyebrow" style={{ marginBottom: '0.5rem' }}>
           Status: {status}
         </div>
         <h2
           style={{
-            fontFamily: 'var(--fd)',
+            fontFamily: 'var(--os-fd)',
             fontSize: '3rem',
             fontWeight: 300,
-            color: 'var(--white)',
+            color: 'var(--os-white)',
             lineHeight: 1.1,
             marginBottom: '0.5rem',
           }}
         >
           {estimate.project_name}
         </h2>
-        <p style={{ fontSize: '0.85rem', color: 'var(--wg)', marginBottom: '3rem' }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--os-warm-gray)', marginBottom: '3rem' }}>
           {estimate.architect_name} · {estimate.architect_email}
         </p>
 
@@ -302,7 +293,7 @@ function SmartLedgerEditor({
             <div
               style={{
                 fontSize: '0.62rem',
-                color: 'var(--accent)',
+                color: 'var(--os-accent)',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 marginBottom: '1rem',
@@ -335,7 +326,7 @@ function SmartLedgerEditor({
                   key={h}
                   style={{
                     fontSize: '0.58rem',
-                    color: 'var(--accent)',
+                    color: 'var(--os-accent)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
                   }}
@@ -353,7 +344,7 @@ function SmartLedgerEditor({
                   gridTemplateColumns: GRID_COLS,
                   gap: '0.5rem',
                   padding: '0.5rem 0',
-                  borderBottom: '1px solid var(--border)',
+                  borderBottom: '1px solid var(--os-border)',
                   alignItems: 'center',
                 }}
               >
@@ -398,7 +389,7 @@ function SmartLedgerEditor({
                   }
                 />
                 <input
-                  style={{ ...INPUT_STYLE, color: 'var(--accent)' }}
+                  style={{ ...INPUT_STYLE, color: 'var(--os-accent)' }}
                   readOnly
                   value={fmt(row.unit_price_eur)}
                 />
@@ -420,7 +411,7 @@ function SmartLedgerEditor({
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'var(--danger)',
+                    color: 'var(--os-danger)',
                     fontSize: '1.1rem',
                     cursor: 'pointer',
                     lineHeight: 1,
@@ -439,9 +430,9 @@ function SmartLedgerEditor({
                 marginTop: '1rem',
                 padding: '1rem',
                 background: 'transparent',
-                border: '1px dashed var(--accent)',
-                color: 'var(--accent)',
-                fontFamily: 'var(--fu)',
+                border: '1px dashed var(--os-accent)',
+                color: 'var(--os-accent)',
+                fontFamily: 'var(--os-fu)',
                 fontSize: '0.72rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
@@ -456,9 +447,9 @@ function SmartLedgerEditor({
                 display: 'flex',
                 justifyContent: 'flex-end',
                 marginTop: '2rem',
-                fontFamily: 'var(--fd)',
+                fontFamily: 'var(--os-fd)',
                 fontSize: '2rem',
-                color: 'var(--white)',
+                color: 'var(--os-white)',
               }}
             >
               Total Trade Value: €{fmt(totalValue)}
@@ -469,16 +460,16 @@ function SmartLedgerEditor({
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div
               style={{
-                border: '1px solid var(--border)',
+                border: '1px solid var(--os-border)',
                 background: 'rgba(17,16,9,0.4)',
                 padding: '1.5rem',
               }}
             >
               <div
                 style={{
-                  fontFamily: 'var(--fd)',
+                  fontFamily: 'var(--os-fd)',
                   fontSize: '1.1rem',
-                  color: 'var(--white)',
+                  color: 'var(--os-white)',
                   marginBottom: '1rem',
                 }}
               >
@@ -487,29 +478,29 @@ function SmartLedgerEditor({
               {estimate.file_url ? (
                 <button
                   type="button"
-                  className="btn-g"
+                  className="os-btn-ghost"
                   style={{ width: '100%' }}
                   onClick={() => window.open(estimate.file_url!, '_blank')}
                 >
                   View Original BOQ File
                 </button>
               ) : (
-                <p style={{ fontSize: '0.75rem', color: 'var(--mg)' }}>No BOQ file attached.</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--os-mid-gray)' }}>No BOQ file attached.</p>
               )}
             </div>
 
             <div
               style={{
-                border: '1px solid var(--border)',
+                border: '1px solid var(--os-border)',
                 background: 'rgba(17,16,9,0.4)',
                 padding: '1.5rem',
               }}
             >
               <div
                 style={{
-                  fontFamily: 'var(--fd)',
+                  fontFamily: 'var(--os-fd)',
                   fontSize: '1.1rem',
-                  color: 'var(--white)',
+                  color: 'var(--os-white)',
                   marginBottom: '1rem',
                 }}
               >
@@ -517,7 +508,7 @@ function SmartLedgerEditor({
               </div>
               <button
                 type="button"
-                className="btn-g"
+                className="os-btn-primary"
                 style={{ width: '100%', marginBottom: '0.75rem' }}
                 disabled={saving || sending || attaching}
                 onClick={handleSaveDraft}
@@ -526,7 +517,7 @@ function SmartLedgerEditor({
               </button>
               <button
                 type="button"
-                className="btn-p"
+                className="os-btn-primary"
                 style={{ width: '100%' }}
                 disabled={saving || sending || attaching}
                 onClick={handleSendToArchitect}
@@ -538,16 +529,16 @@ function SmartLedgerEditor({
             {status === 'Approved' && (
               <div
                 style={{
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--os-border)',
                   background: 'rgba(17,16,9,0.4)',
                   padding: '1.5rem',
                 }}
               >
                 <div
                   style={{
-                    fontFamily: 'var(--fd)',
+                    fontFamily: 'var(--os-fd)',
                     fontSize: '1.1rem',
-                    color: 'var(--white)',
+                    color: 'var(--os-white)',
                     marginBottom: '1rem',
                   }}
                 >
@@ -562,7 +553,7 @@ function SmartLedgerEditor({
                     cursor: 'pointer',
                     marginBottom: '1rem',
                     fontSize: '0.75rem',
-                    color: 'var(--wg)',
+                    color: 'var(--os-warm-gray)',
                   }}
                 >
                   <input
@@ -575,7 +566,7 @@ function SmartLedgerEditor({
                 </label>
                 <button
                   type="button"
-                  className="btn-p"
+                  className="os-btn-primary"
                   style={{ width: '100%' }}
                   disabled={!invoiceFile || attaching || saving || sending}
                   onClick={handleAttachInvoice}
@@ -586,7 +577,7 @@ function SmartLedgerEditor({
             )}
 
             {err && (
-              <p style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>{err}</p>
+              <p style={{ color: 'var(--os-danger)', fontSize: '0.85rem' }}>{err}</p>
             )}
           </div>
         </div>
@@ -623,19 +614,11 @@ export default function EstimatesView() {
 
   return (
     <div>
-      <style>{`
-        .row{display:grid;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--border)}
-        .row-title{font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:.2rem}
-        .row-sub{font-size:.62rem;color:var(--wg);text-transform:uppercase;letter-spacing:.06em}
-        .sk{background:linear-gradient(90deg,var(--bg-s) 25%,rgba(255,255,255,.04) 50%,var(--bg-s) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px}
-        @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-      `}</style>
-
-      <div className="eyebrow">Quote-to-Cash</div>
-      <h1 className="title">Smart Ledger</h1>
+      <div className="os-eyebrow">Quote-to-Cash</div>
+      <h1 className="os-page-title">Smart Ledger</h1>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -646,12 +629,12 @@ export default function EstimatesView() {
           gridTemplateColumns: '2fr 1.5fr 1fr 1fr auto',
           gap: '1.5rem',
           paddingBottom: '1rem',
-          borderBottom: '1px solid var(--border)',
+          borderBottom: '1px solid var(--os-border)',
           marginBottom: '0.5rem',
         }}
       >
         {['Project Name', 'Architect', 'Date Submitted', 'Status', ''].map((h) => (
-          <div key={h} className="row-sub">
+          <div key={h} className="os-row-sub">
             {h}
           </div>
         ))}
@@ -661,34 +644,34 @@ export default function EstimatesView() {
         [1, 2, 3].map((i) => (
           <div
             key={i}
-            className="row"
+            className="os-row"
             style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr auto' }}
           >
-            <div className="sk" style={{ height: '1rem', width: '60%' }} />
-            <div className="sk" style={{ height: '1rem', width: '70%' }} />
-            <div className="sk" style={{ height: '1rem', width: '40%' }} />
-            <div className="sk" style={{ height: '1.2rem', width: '50%' }} />
-            <div className="sk" style={{ height: '1rem', width: '30%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '60%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '70%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '40%' }} />
+            <div className="os-sk" style={{ height: '1.2rem', width: '50%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '30%' }} />
           </div>
         ))
       ) : estimates.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No estimates yet.</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>No estimates yet.</p>
       ) : (
         estimates.map((e) => (
           <div
             key={e.id}
-            className="row"
+            className="os-row"
             style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr auto', alignItems: 'center' }}
           >
-            <div className="row-title">{e.project_name}</div>
-            <div className="row-sub">
+            <div className="os-row-title">{e.project_name}</div>
+            <div className="os-row-sub">
               {e.architect_name} · {e.architect_email}
             </div>
-            <div style={{ fontSize: '.78rem', color: 'var(--wg)' }}>
+            <div style={{ fontSize: '.78rem', color: 'var(--os-warm-gray)' }}>
               {new Date(e.created_at).toLocaleDateString()}
             </div>
-            <span className={`badge ${badgeClass(e.status)}`}>{e.status}</span>
-            <button type="button" className="btn-l" onClick={() => setSelected(e)}>
+            <span className={`os-badge ${badgeClass(e.status)}`}>{e.status}</span>
+            <button type="button" className="os-btn-link" onClick={() => setSelected(e)}>
               Open Ledger
             </button>
           </div>
