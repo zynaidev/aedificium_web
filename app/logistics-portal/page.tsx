@@ -509,7 +509,10 @@ export default function LogisticsPortal() {
   return (
     <div className="os-wrap">
       <aside className="os-sidebar">
-        <div className="os-sidebar-logo">AEDIFICIUM OS</div>
+        <div className="os-sidebar-logo">
+          <span className="os-wordmark-aedificium">AEDIFICIUM</span>{' '}
+          <span className="os-wordmark-os">OS</span>
+        </div>
         <nav className="os-nav">
           {NAV.map((item) => (
             <button

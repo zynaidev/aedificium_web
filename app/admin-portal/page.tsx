@@ -93,7 +93,8 @@ export default function AdminPortal() {
     <div className="os-wrap">
       <aside className="os-sidebar">
         <div className="os-sidebar-logo">
-          AEDIFICIUM <span style={{ color: 'var(--os-accent)' }}>HQ</span>
+          <span className="os-wordmark-aedificium">AEDIFICIUM</span>{' '}
+          <span style={{ color: 'var(--os-accent)', fontStyle: 'italic', fontFamily: 'var(--os-fd)' }}>HQ</span>
         </div>
         <nav className="os-nav">
           {NAV.map((item, idx) => (

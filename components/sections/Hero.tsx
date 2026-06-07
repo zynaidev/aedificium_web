@@ -39,17 +39,27 @@ const itemVariants = {
 export default function Hero() {
   const [cols, setCols] = useState<string[][]>([[], [], [], [], []]);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [primaryHover, setPrimaryHover] = useState(false);
   const [secondaryHover, setSecondaryHover] = useState(false);
 
   useEffect(() => {
-    const shuffled = shuffleArray(ALL_IMAGES);
-    const newCols = [0, 1, 2, 3, 4].map((colIndex) =>
-      shuffled.filter((_, i) => i % 5 === colIndex)
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    const imageCount = isMobile ? 30 : 103;
+    const colCount = isMobile ? 3 : 5;
+    const shuffled = shuffleArray(ALL_IMAGES.slice(0, imageCount));
+    const newCols = Array.from({ length: colCount }, (_, colIndex) =>
+      shuffled.filter((_, i) => i % colCount === colIndex)
     );
     setCols(newCols);
     setMounted(true);
-  }, []);
+  }, [isMobile]);
 
   const VERTICAL_WORDS = [
     "Execution Infrastructure",
@@ -228,7 +238,7 @@ export default function Hero() {
           transition: "opacity 1.5s ease",
         }}
       >
-        {cols.map((colImages, colIndex) => (
+        {cols.slice(0, isMobile ? 3 : 5).map((colImages, colIndex) => (
           <div
             key={colIndex}
             style={{
@@ -273,6 +283,9 @@ export default function Hero() {
                         opacity: 0.65,
                         filter: "grayscale(30%)",
                         transition: "opacity 0.4s ease, filter 0.4s ease",
+                      }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
                       }}
                       onMouseEnter={(e) => {
                         (e.target as HTMLImageElement).style.opacity = "1";

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /os-dashboard/
+Disallow: /admin-portal/
+Disallow: /logistics-portal/
+Disallow: /os-login/
+Disallow: /api/
+
+Sitemap: https://aedificium.design/sitemap.xml

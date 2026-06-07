@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "MontserratAlt1";
+  src: url("/fonts/MontserratAlt1-Regular.woff2") format("woff2"),
+       url("/fonts/MontserratAlt1-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
 
 @layer base {
@@ -22,6 +31,29 @@
     --space-section-mobile: 64px;
     --container-max: 1280px;
     --font-montserrat-alt1: "Montserrat-Alt1", sans-serif;
+    --font-montserrat-alt: "MontserratAlt1", "Montserrat", sans-serif;
+    --text-body: 16px;
+    --text-label: 13.6px;
+    --text-table: 18px;
+    --text-card-title: 1.5rem;
+    --text-section-title: 3rem;
+    --text-dashboard-title: 3.5rem;
+
+    /* Extended accent palette */
+    --accent-bright: #d4a020;
+    --accent-light-gold: #e8c97a;
+    --text-warm: #f0ece6;
+
+    /* Standardized amber opacity tokens */
+    --amber-75: rgba(185,139,54,0.75);
+    --amber-55: rgba(185,139,54,0.55);
+    --amber-45: rgba(185,139,54,0.45);
+    --amber-35: rgba(185,139,54,0.35);
+    --amber-20: rgba(185,139,54,0.20);
+    --amber-12: rgba(185,139,54,0.12);
+    --amber-08: rgba(185,139,54,0.08);
+    --amber-06: rgba(185,139,54,0.06);
+    --amber-04: rgba(185,139,54,0.04);
   }
 
   @font-face {
@@ -35,12 +67,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
+    font-size: 16px;
     background-color: var(--bg-base);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
   }
 
   body {
+    font-size: var(--text-body);
+    line-height: 1.75;
     background-color: var(--bg-base);
     color: var(--text-primary);
     overflow-x: hidden;

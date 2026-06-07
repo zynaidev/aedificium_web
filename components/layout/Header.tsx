@@ -115,10 +115,10 @@ export default function Header() {
           <a
             href="/"
             style={{
-              fontFamily: "var(--font-cormorant)",
-              fontSize: "18px",
+              fontFamily: "var(--font-montserrat-alt)",
+              fontSize: "15px",
               fontWeight: 400,
-              letterSpacing: "0.25em",
+              letterSpacing: "0.15em",
               color: "#f0ece6",
               textDecoration: "none",
             }}
@@ -128,6 +128,9 @@ export default function Header() {
           <button
             className="header-hamburger"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             style={{
               display: "none",
               flexDirection: "column",
@@ -176,6 +179,7 @@ export default function Header() {
           </button>
           <nav
             className="header-nav-desktop"
+            aria-label="Main navigation"
             style={{ display: "flex", alignItems: "center", gap: "48px" }}
           >
             {NAV_LINKS.map((item) => (
@@ -220,6 +224,9 @@ export default function Header() {
         {menuOpen && (
           <motion.div
             className="header-mobile-menu"
+            id="mobile-menu"
+            role="navigation"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}

@@ -35,12 +35,6 @@ const PHASES = [
   },
 ];
 
-const containerStyle = {
-  maxWidth: "var(--container-max)",
-  margin: "0 auto",
-  padding: "0 clamp(24px, 5vw, 80px)",
-} as const;
-
 export default function OSPage() {
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true, margin: "0px" });

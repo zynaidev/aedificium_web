@@ -83,12 +83,14 @@
   overflow-y: auto;
 }
 .os-sidebar-logo {
-  font-family: var(--os-fu);
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   letter-spacing: 0.36em;
   color: var(--os-white);
   text-transform: uppercase;
   margin-bottom: 3.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
 }
 .os-nav { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
 .os-nav-btn {
@@ -476,6 +478,29 @@ select.os-input option { background: #1a0b08; color: var(--os-bone); }
   overflow-y: auto;
   background: var(--os-bg-raised);
   padding: 2rem 2.5rem;
+}
+
+.os-wordmark-aedificium {
+  font-family: var(--font-montserrat-alt);
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  color: var(--os-white);
+}
+.os-wordmark-os {
+  background: linear-gradient(90deg, #c17a4a 0%, #b98b36 35%, #e8c97a 55%, #b98b36 75%, #c17a4a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: osPulse 4s ease-in-out infinite, osShift 7s linear infinite;
+  font-style: italic;
+  font-family: var(--os-fd);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
 @media (max-width: 1100px) { .os-main { padding: 3rem 2.5rem; } }

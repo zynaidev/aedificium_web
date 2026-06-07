@@ -707,7 +707,7 @@ export default function PlatformPage() {
                     gap: "12px 24px",
                   }}
                 >
-                  {p.items.map((item, index) => (
+                  {p.items.map((item) => (
                     <div
                       key={item}
                       style={{ display: "flex", alignItems: "center", gap: "10px" }}

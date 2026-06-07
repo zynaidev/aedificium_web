@@ -76,10 +76,10 @@ export default function LoadingScreen() {
               <span
                 key={i}
                 style={{
-                  fontFamily: "var(--font-cormorant)",
+                  fontFamily: "var(--font-montserrat-alt)",
                   fontSize: "clamp(32px, 8vw, 100px)",
                   fontWeight: 400,
-                  letterSpacing: "0.22em",
+                  letterSpacing: "0.15em",
                   color: "#f0ece6",
                   display: "inline-block",
                   opacity: textVisible ? 1 : 0,
