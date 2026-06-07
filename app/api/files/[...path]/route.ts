@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { getAuthUser } from '@/lib/api-auth'
 
 const MIME: Record<string, string> = {
   pdf: 'application/pdf',
@@ -29,31 +30,41 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
 ) {
-  const uploadDir = process.env.UPLOAD_DIR
-  if (!uploadDir) {
-    return NextResponse.json({ error: 'Upload not configured' }, { status: 500 })
-  }
+  try {
+    await getAuthUser()
 
-  const { path: segments } = await params
-  if (!segments?.length) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  }
+    const uploadDir = process.env.UPLOAD_DIR
+    if (!uploadDir) {
+      return NextResponse.json({ error: 'Upload not configured' }, { status: 500 })
+    }
 
-  const resolved = path.resolve(uploadDir, ...segments)
-  if (!resolved.startsWith(path.resolve(uploadDir))) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  }
+    const { path: segments } = await params
+    if (!segments?.length) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
 
-  if (!fs.existsSync(resolved) || !fs.statSync(resolved).isFile()) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  }
+    const resolvedUploadDir = path.resolve(uploadDir)
+    const resolvedFilePath = path.resolve(path.join(uploadDir, ...segments))
+    const relative = path.relative(resolvedUploadDir, resolvedFilePath)
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
-  const buffer = fs.readFileSync(resolved)
-  return new NextResponse(buffer, {
-    status: 200,
-    headers: {
-      'Content-Type': contentTypeFor(resolved),
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    },
-  })
+    if (!fs.existsSync(resolvedFilePath) || !fs.statSync(resolvedFilePath).isFile()) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
+    const buffer = fs.readFileSync(resolvedFilePath)
+    return new NextResponse(buffer, {
+      status: 200,
+      headers: {
+        'Content-Type': contentTypeFor(resolvedFilePath),
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    })
+  } catch (err) {
+    if (err instanceof Response) return err
+    console.error('[/api/files GET]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

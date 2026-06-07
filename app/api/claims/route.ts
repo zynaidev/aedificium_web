@@ -6,6 +6,7 @@ import { getAuthUser, requireRole } from '@/lib/api-auth'
 export async function GET() {
   try {
     const user = await getAuthUser()
+    requireRole(user, ['designer', 'admin'])
     const isAdmin = user.role === 'admin'
 
     const { rows } = await query(
@@ -45,6 +46,16 @@ export async function POST(req: NextRequest) {
 
     if (!item_name || !issue_type) {
       return NextResponse.json({ error: 'item_name and issue_type required' }, { status: 400 })
+    }
+
+    if (project_id && user.role !== 'admin') {
+      const { rows: ownRows } = await query(
+        `SELECT id FROM projects WHERE id = $1 AND architect_id = $2`,
+        [project_id, user.id]
+      )
+      if (ownRows.length === 0) {
+        return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+      }
     }
 
     const { rows } = await query(

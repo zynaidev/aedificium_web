@@ -6,8 +6,9 @@ import { getAuthUser, requireRole } from '@/lib/api-auth'
 export async function GET(req: NextRequest) {
   try {
     const user = await getAuthUser()
+    requireRole(user, ['designer', 'admin'])
     const projectId = new URL(req.url).searchParams.get('project_id')
-    const privileged = user.role === 'admin' || user.role === 'logistics'
+    const privileged = user.role === 'admin'
 
     let sql: string
     let params: unknown[]
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const user = await getAuthUser()
-    requireRole(user, ['logistics', 'admin'])
+    requireRole(user, ['admin'])
 
     const body = await req.json()
     const { id, ...fields } = body

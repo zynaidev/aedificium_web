@@ -38,34 +38,34 @@ export default function BrandsView() {
 
   return (
     <div>
-      <div className="eyebrow">Specification Network</div>
-      <h1 className="title">Brand Library</h1>
+      <div className="os-eyebrow">Specification Network</div>
+      <h1 className="os-page-title">Brand Library</h1>
 
-      <div style={{display:'flex',flexWrap:'wrap',gap:'.5rem 2rem',paddingBottom:'1.5rem',marginBottom:'2.5rem',borderBottom:'1px solid var(--border)'}}>
+      <div style={{display:'flex',flexWrap:'wrap',gap:'.5rem 2rem',paddingBottom:'1.5rem',marginBottom:'2.5rem',borderBottom:'1px solid var(--os-border)'}}>
         {filters.map(f=>(
-          <button key={f.value} onClick={()=>setFilter(f.value)} style={{background:'none',border:'none',padding:'0 0 .5rem 0',fontFamily:'var(--fu)',fontSize:'.68rem',letterSpacing:'.14em',textTransform:'uppercase',color:filter===f.value?'var(--bone)':'var(--wg)',cursor:'pointer',transition:'color .25s',position:'relative'}}>
+          <button key={f.value} onClick={()=>setFilter(f.value)} style={{background:'none',border:'none',padding:'0 0 .5rem 0',fontFamily:'var(--os-fu)',fontSize:'.68rem',letterSpacing:'.14em',textTransform:'uppercase',color:filter===f.value?'var(--os-bone)':'var(--os-warm-gray)',cursor:'pointer',transition:'color .25s',position:'relative'}}>
             {f.label}
-            {filter===f.value&&<div style={{position:'absolute',bottom:0,left:0,right:0,height:'1.5px',background:'linear-gradient(90deg,var(--accent),var(--gold))'}}/>}
+            {filter===f.value&&<div style={{position:'absolute',bottom:0,left:0,right:0,height:'1.5px',background:'linear-gradient(90deg,var(--os-accent),var(--os-gold))'}}/>}
           </button>
         ))}
       </div>
 
       {loading
-        ? <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'1.25rem'}}>{Array.from({length:24}).map((_,i)=><div key={i} className="sk" style={{height:'90px'}}/>)}</div>
+        ? <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'1.25rem'}}>{Array.from({length:24}).map((_,i)=><div key={i} className="os-sk" style={{height:'90px'}}/>)}</div>
         : error
-          ? <div style={{color:'var(--danger)',fontSize:'.85rem'}}>{error}</div>
+          ? <div style={{color:'var(--os-danger)',fontSize:'.85rem'}}>{error}</div>
           : filtered.length===0
-            ? <div style={{color:'var(--mg)',fontSize:'.85rem'}}>No brands in this category.</div>
+            ? <div style={{color:'var(--os-mid-gray)',fontSize:'.85rem'}}>No brands in this category.</div>
             : <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'1.25rem'}}>
                 {filtered.map((b,idx)=>{
                   const span:React.CSSProperties=idx%11===0?{gridColumn:'span 2',gridRow:'span 2'}:idx%7===0?{gridColumn:'span 2'}:idx%5===0?{gridRow:'span 2'}:{}
                   return (
-                    <div key={`brand-${b.id}-${idx}`} style={{...span,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border)',background:'rgba(17,16,9,.4)',padding:'2rem 1.5rem',textAlign:'center',transition:'all .3s var(--ease)',cursor:b.url?'pointer':'default',minHeight:'88px'}}
+                    <div key={`brand-${b.id}-${idx}`} style={{...span,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--os-border)',background:'rgba(17,16,9,.4)',padding:'2rem 1.5rem',textAlign:'center',transition:'all .3s var(--os-ease)',cursor:b.url?'pointer':'default',minHeight:'88px'}}
                       onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.borderColor='rgba(193,122,74,.4)';e.currentTarget.style.background='rgba(17,16,9,.8)'}}
-                      onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.background='rgba(17,16,9,.4)'}}
+                      onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.borderColor='var(--os-border)';e.currentTarget.style.background='rgba(17,16,9,.4)'}}
                       onClick={()=>b.url&&window.open(b.url,'_blank')}
                     >
-                      <span style={{fontFamily:'var(--fu)',fontSize:idx%11===0?'1.1rem':'.82rem',color:'var(--wg)',fontWeight:300,letterSpacing:'.1em',textTransform:'uppercase',transition:'color .25s',lineHeight:1.4}}>{b.name}</span>
+                      <span style={{fontFamily:'var(--os-fu)',fontSize:idx%11===0?'1.1rem':'.82rem',color:'var(--os-warm-gray)',fontWeight:300,letterSpacing:'.1em',textTransform:'uppercase',transition:'color .25s',lineHeight:1.4}}>{b.name}</span>
                     </div>
                   )
                 })}
@@ -73,7 +73,7 @@ export default function BrandsView() {
       }
 
       {!loading&&!error&&(
-        <div style={{marginTop:'2.5rem',paddingTop:'1.5rem',borderTop:'1px solid var(--border)',fontSize:'.65rem',color:'var(--mg)',letterSpacing:'.1em',textTransform:'uppercase'}}>
+        <div style={{marginTop:'2.5rem',paddingTop:'1.5rem',borderTop:'1px solid var(--os-border)',fontSize:'.65rem',color:'var(--os-mid-gray)',letterSpacing:'.1em',textTransform:'uppercase'}}>
           {filtered.length} brand{filtered.length!==1?'s':''} in network{filter!=='all'&&` · ${filters.find(f=>f.value===filter)?.label}`}
         </div>
       )}

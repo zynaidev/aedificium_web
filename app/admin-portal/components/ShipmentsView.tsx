@@ -110,38 +110,30 @@ function EditPanel({
 
   return (
     <>
-      <style>{`
-        .overlay{position:fixed;inset:0;background:rgba(10,8,6,.75);backdrop-filter:blur(4px);z-index:100}
-        .panel{position:fixed;top:0;right:0;width:560px;max-width:100vw;height:100svh;background:var(--bg-r);border-left:1px solid var(--border-g);z-index:101;display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.6)}
-        .panel-hdr{padding:2rem 2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0}
-        .panel-body{flex:1;padding:2rem;overflow-y:auto}
-        .panel-close{background:none;border:none;color:var(--wg);font-size:1.4rem;cursor:pointer;line-height:1;padding:0}
-        .panel-close:hover{color:var(--accent)}
-      `}</style>
-      <div className="overlay" onClick={onClose} />
-      <div className="panel">
-        <div className="panel-hdr">
+      <div className="os-overlay open" onClick={onClose} />
+      <div className="os-panel open">
+        <div className="os-panel-header">
           <div>
-            <div className="eyebrow" style={{ marginBottom: '.2rem' }}>
+            <div className="os-eyebrow" style={{ marginBottom: '.2rem' }}>
               Shipment Editor
             </div>
-            <div style={{ fontFamily: 'var(--fd)', fontSize: '1.4rem', color: 'var(--white)' }}>
+            <div style={{ fontFamily: 'var(--os-fd)', fontSize: '1.4rem', color: 'var(--os-white)' }}>
               {shipment.shipment_ref}
             </div>
-            <div className="row-sub" style={{ marginTop: '.5rem' }}>
+            <div className="os-row-sub" style={{ marginTop: '.5rem' }}>
               {shipment.project_name} · {shipment.ref_number}
             </div>
-            <div className="row-sub" style={{ marginTop: '.25rem' }}>
+            <div className="os-row-sub" style={{ marginTop: '.25rem' }}>
               {shipment.architect_name} · {shipment.architect_email}
             </div>
           </div>
-          <button type="button" className="panel-close" onClick={onClose}>
+          <button type="button" className="os-panel-close" onClick={onClose}>
             ×
           </button>
         </div>
-        <div className="panel-body">
-          <label className="lbl">Status</label>
-          <select className="inp" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <div className="os-panel-body">
+          <label className="os-input-label">Status</label>
+          <select className="os-input" value={status} onChange={(e) => setStatus(e.target.value)}>
             {STATUS_OPTIONS.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -149,10 +141,10 @@ function EditPanel({
             ))}
           </select>
 
-          <label className="lbl">Target Date</label>
+          <label className="os-input-label">Target Date</label>
           <input
             type="date"
-            className="inp"
+            className="os-input"
             style={{ colorScheme: 'dark' }}
             value={targetDate}
             onChange={(e) => setTargetDate(e.target.value)}
@@ -160,9 +152,9 @@ function EditPanel({
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
             <div>
-              <label className="lbl">CBM</label>
+              <label className="os-input-label">CBM</label>
               <input
-                className="inp"
+                className="os-input"
                 type="number"
                 step="0.01"
                 min="0"
@@ -171,9 +163,9 @@ function EditPanel({
               />
             </div>
             <div>
-              <label className="lbl">Weight kg</label>
+              <label className="os-input-label">Weight kg</label>
               <input
-                className="inp"
+                className="os-input"
                 type="number"
                 step="0.01"
                 min="0"
@@ -182,9 +174,9 @@ function EditPanel({
               />
             </div>
             <div>
-              <label className="lbl">Pallet Count</label>
+              <label className="os-input-label">Pallet Count</label>
               <input
-                className="inp"
+                className="os-input"
                 type="number"
                 min="0"
                 value={palletCount}
@@ -193,25 +185,25 @@ function EditPanel({
             </div>
           </div>
 
-          <label className="lbl">Tracking Number</label>
+          <label className="os-input-label">Tracking Number</label>
           <input
-            className="inp"
+            className="os-input"
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
           />
 
-          <label className="lbl">Notes</label>
-          <input className="inp" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <label className="os-input-label">Notes</label>
+          <input className="os-input" value={notes} onChange={(e) => setNotes(e.target.value)} />
 
-          <button type="button" className="btn-p" disabled={busy} onClick={save}>
+          <button type="button" className="os-btn-primary" disabled={busy} onClick={save}>
             {busy ? 'Saving...' : 'Save Changes'}
           </button>
 
           {msg && (
-            <p style={{ color: 'var(--ok)', fontSize: '.85rem', marginTop: '1rem' }}>{msg}</p>
+            <p style={{ color: 'var(--os-success)', fontSize: '.85rem', marginTop: '1rem' }}>{msg}</p>
           )}
           {err && (
-            <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginTop: '1rem' }}>
+            <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginTop: '1rem' }}>
               {err}
             </p>
           )}
@@ -265,32 +257,32 @@ export default function ShipmentsView() {
 
   return (
     <div>
-      <style>{`
-        .row{display:grid;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s}
-        .row:hover{background:rgba(17,16,9,.35)}
-        .row-title{font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:.2rem}
-        .row-sub{font-size:.62rem;color:var(--wg);text-transform:uppercase;letter-spacing:.06em}
-        .sk{background:linear-gradient(90deg,var(--bg-s) 25%,rgba(255,255,255,.04) 50%,var(--bg-s) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px}
-        @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        .tab-btn{background:none;border:1px solid var(--border);color:var(--wg);padding:.55rem 1.25rem;font-family:var(--fu);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .25s;border-radius:2px}
-        .tab-btn.active{border-color:var(--border-g);color:var(--white)}
-        .tab-btn:hover{border-color:var(--accent);color:var(--accent)}
-      `}</style>
-
-      <div className="eyebrow">Logistics</div>
-      <h1 className="title">Shipments</h1>
+      <div className="os-eyebrow">Logistics</div>
+      <h1 className="os-page-title">Shipments</h1>
 
       <div style={{ display: 'flex', gap: '.75rem', marginBottom: '2rem' }}>
         <button
           type="button"
-          className={`tab-btn${tab === 'active' ? ' active' : ''}`}
+          className={`os-btn-ghost${tab === 'active' ? '' : ''}`}
+          style={{
+            borderColor: tab === 'active' ? 'var(--os-border-gold)' : 'var(--os-border)',
+            color: tab === 'active' ? 'var(--os-white)' : 'var(--os-warm-gray)',
+            padding: '.55rem 1.25rem',
+            fontSize: '.65rem',
+          }}
           onClick={() => setTab('active')}
         >
           Active Queue
         </button>
         <button
           type="button"
-          className={`tab-btn${tab === 'warehouse' ? ' active' : ''}`}
+          className="os-btn-ghost"
+          style={{
+            borderColor: tab === 'warehouse' ? 'var(--os-border-gold)' : 'var(--os-border)',
+            color: tab === 'warehouse' ? 'var(--os-white)' : 'var(--os-warm-gray)',
+            padding: '.55rem 1.25rem',
+            fontSize: '.65rem',
+          }}
           onClick={() => setTab('warehouse')}
         >
           Warehouse
@@ -298,7 +290,7 @@ export default function ShipmentsView() {
       </div>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -309,13 +301,13 @@ export default function ShipmentsView() {
           gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr auto',
           gap: '1.5rem',
           paddingBottom: '1rem',
-          borderBottom: '1px solid var(--border)',
+          borderBottom: '1px solid var(--os-border)',
           marginBottom: '.5rem',
         }}
       >
         {['Shipment', 'Project', 'Architect', 'Destination', 'Status', 'Target / Tracking'].map(
           (h) => (
-            <div key={h} className="row-sub">
+            <div key={h} className="os-row-sub">
               {h}
             </div>
           )
@@ -326,19 +318,19 @@ export default function ShipmentsView() {
         [1, 2, 3].map((i) => (
           <div
             key={i}
-            className="row"
+            className="os-row"
             style={{ gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr auto', cursor: 'default' }}
           >
-            <div className="sk" style={{ height: '1rem', width: '70%' }} />
-            <div className="sk" style={{ height: '1rem', width: '60%' }} />
-            <div className="sk" style={{ height: '1rem', width: '50%' }} />
-            <div className="sk" style={{ height: '1rem', width: '80%' }} />
-            <div className="sk" style={{ height: '1.2rem', width: '40%' }} />
-            <div className="sk" style={{ height: '1rem', width: '55%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '70%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '60%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '50%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '80%' }} />
+            <div className="os-sk" style={{ height: '1.2rem', width: '40%' }} />
+            <div className="os-sk" style={{ height: '1rem', width: '55%' }} />
           </div>
         ))
       ) : list.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>
           {tab === 'active'
             ? 'No shipments in the active queue.'
             : 'No shipments in warehouse.'}
@@ -347,27 +339,38 @@ export default function ShipmentsView() {
         list.map((s) => (
           <div
             key={s.id}
-            className="row"
-            style={{ gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr auto', alignItems: 'center' }}
+            className="os-row"
+            style={{
+              gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr auto',
+              alignItems: 'center',
+              cursor: 'pointer',
+              transition: 'background .2s',
+            }}
             onClick={() => setSelected(s)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(17,16,9,.35)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
           >
             <div>
-              <div className="row-title">{s.shipment_ref}</div>
+              <div className="os-row-title">{s.shipment_ref}</div>
             </div>
-            <div style={{ fontSize: '.78rem', color: 'var(--bone)' }}>
+            <div style={{ fontSize: '.78rem', color: 'var(--os-bone)' }}>
               {s.project_name}
-              <div className="row-sub" style={{ marginTop: '.2rem' }}>
+              <div className="os-row-sub" style={{ marginTop: '.2rem' }}>
                 {s.ref_number}
               </div>
             </div>
-            <div style={{ fontSize: '.75rem', color: 'var(--wg)' }}>{s.architect_name}</div>
-            <div style={{ fontSize: '.72rem', color: 'var(--mg)' }}>
+            <div style={{ fontSize: '.75rem', color: 'var(--os-warm-gray)' }}>{s.architect_name}</div>
+            <div style={{ fontSize: '.72rem', color: 'var(--os-mid-gray)' }}>
               {s.destination_address ?? '—'}
             </div>
-            <span className={`badge ${badgeClass(s.status)}`}>{s.status}</span>
-            <div style={{ fontSize: '.72rem', color: 'var(--wg)' }}>
+            <span className={`os-badge ${badgeClass(s.status)}`}>{s.status}</span>
+            <div style={{ fontSize: '.72rem', color: 'var(--os-warm-gray)' }}>
               <div>{fmtDate(s.target_date)}</div>
-              <div style={{ marginTop: '.25rem', color: 'var(--mg)' }}>
+              <div style={{ marginTop: '.25rem', color: 'var(--os-mid-gray)' }}>
                 {s.tracking_number ?? '—'}
               </div>
             </div>

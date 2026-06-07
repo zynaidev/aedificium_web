@@ -1,11 +1,12 @@
 // app/api/messages/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { getAuthUser, requireRole } from '@/lib/api-auth'
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getAuthUser()
+    requireRole(user, ['designer', 'logistics', 'admin'])
     const shipmentId = new URL(req.url).searchParams.get('shipment_id')
 
     if (!shipmentId) return NextResponse.json({ error: 'shipment_id required' }, { status: 400 })
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = await getAuthUser()
+    requireRole(user, ['designer', 'logistics', 'admin'])
     const { shipment_id, message_body } = await req.json()
 
     if (!shipment_id || !message_body?.trim()) {

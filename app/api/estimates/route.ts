@@ -7,6 +7,7 @@ import { uploadFile, buildFileKey } from '@/lib/r2'
 export async function GET() {
   try {
     const user = await getAuthUser()
+    requireRole(user, ['designer', 'admin'])
     const isAdmin = user.role === 'admin'
 
     const { rows } = await query(

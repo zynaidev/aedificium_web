@@ -9,3 +9,12 @@ export const authClient = createAuthClient({
 export const signIn = authClient.signIn;
 export const signOut = authClient.signOut;
 export const useSession = authClient.useSession;
+
+export type OSUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: "designer" | "logistics" | "admin";
+  studio_name: string | null;
+  is_active: boolean;
+};

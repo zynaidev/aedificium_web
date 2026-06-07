@@ -68,16 +68,11 @@ export default function OverviewView() {
 
   return (
     <div>
-      <style>{`
-        .sk{background:linear-gradient(90deg,var(--bg-s) 25%,rgba(255,255,255,.04) 50%,var(--bg-s) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px}
-        @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-      `}</style>
-
-      <div className="eyebrow">Admin Intelligence</div>
-      <h1 className="title">Overview</h1>
+      <div className="os-eyebrow">Admin Intelligence</div>
+      <h1 className="os-page-title">Overview</h1>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
@@ -94,20 +89,20 @@ export default function OverviewView() {
         {cards.map((c) => (
           <div
             key={c.label}
-            style={{ background: 'var(--bg-r)', padding: '2rem', textAlign: 'center' }}
+            style={{ background: 'var(--os-bg-raised)', padding: '2rem', textAlign: 'center' }}
           >
             {loading ? (
               <div
-                className="sk"
+                className="os-sk"
                 style={{ height: '2.5rem', width: '3rem', margin: '0 auto .5rem' }}
               />
             ) : (
               <div
                 style={{
-                  fontFamily: 'var(--fd)',
+                  fontFamily: 'var(--os-fd)',
                   fontSize: '3rem',
                   fontWeight: 300,
-                  color: c.alert ? 'var(--danger)' : 'var(--white)',
+                  color: c.alert ? 'var(--os-danger)' : 'var(--os-white)',
                   lineHeight: 1,
                   marginBottom: '.5rem',
                 }}
@@ -118,7 +113,7 @@ export default function OverviewView() {
             <div
               style={{
                 fontSize: '.6rem',
-                color: 'var(--wg)',
+                color: 'var(--os-warm-gray)',
                 textTransform: 'uppercase',
                 letterSpacing: '.12em',
               }}

@@ -223,10 +223,10 @@ export default function Footer() {
             <a href="/os-login" className="aed-f-link">
               Partner Login
             </a>
-            <a href="/privacy-policy" className="aed-f-link">
+            <a href="#" className="aed-f-link">
               Privacy Policy
             </a>
-            <a href="/terms" className="aed-f-link">
+            <a href="#" className="aed-f-link">
               Terms of Use
             </a>
           </div>
@@ -246,7 +246,7 @@ export default function Footer() {
           <ul className="aed-f-legal">
             <li>
               <a
-                href="/privacy-policy"
+                href="#"
                 style={{
                   fontFamily: "var(--font-inter)",
                   fontSize: "10px",
@@ -270,7 +270,7 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="/cookies-policy"
+                href="#"
                 style={{
                   fontFamily: "var(--font-inter)",
                   fontSize: "10px",
@@ -294,7 +294,7 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="/imprint"
+                href="#"
                 style={{
                   fontFamily: "var(--font-inter)",
                   fontSize: "10px",

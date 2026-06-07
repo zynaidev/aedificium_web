@@ -16,8 +16,8 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
 
   return (
     <div>
-      <div className="eyebrow">Project Intelligence</div>
-      <h1 className="title">Welcome to the<br />Infrastructure.</h1>
+      <div className="os-eyebrow">Project Intelligence</div>
+      <h1 className="os-page-title">Welcome to the<br />Infrastructure.</h1>
 
       {/* Stats */}
       <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'1px',background:'rgba(185,139,54,.12)',border:'1px solid rgba(185,139,54,.12)',marginBottom:'3.5rem'}}>
@@ -27,12 +27,12 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
           {label:'Quotes to Review',val:quotes,  alert:quotes>0},
           {label:'Open Claims',     val:openCl,  alert:openCl>0},
         ].map(s => (
-          <div key={s.label} style={{background:'var(--bg-r)',padding:'2rem',textAlign:'center'}}>
+          <div key={s.label} style={{background:'var(--os-bg-raised)',padding:'2rem',textAlign:'center'}}>
             {loading
-              ? <div className="sk" style={{height:'2.5rem',width:'3rem',margin:'0 auto .5rem'}}/>
-              : <div style={{fontFamily:'var(--fd)',fontSize:'3rem',fontWeight:300,color:s.alert?'var(--danger)':'var(--white)',lineHeight:1,marginBottom:'.5rem'}}>{s.val}</div>
+              ? <div className="os-sk" style={{height:'2.5rem',width:'3rem',margin:'0 auto .5rem'}}/>
+              : <div style={{fontFamily:'var(--os-fd)',fontSize:'3rem',fontWeight:300,color:s.alert?'var(--os-danger)':'var(--os-white)',lineHeight:1,marginBottom:'.5rem'}}>{s.val}</div>
             }
-            <div style={{fontSize:'.6rem',color:'var(--wg)',textTransform:'uppercase',letterSpacing:'.12em'}}>{s.label}</div>
+            <div style={{fontSize:'.6rem',color:'var(--os-warm-gray)',textTransform:'uppercase',letterSpacing:'.12em'}}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -44,16 +44,16 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
           {n:'02',title:'Active Logistics',val:logistics,desc:'',btn:'View Shipments',tab:'projects' as const},
           {n:'03',title:'New Specification',val:null,desc:'Upload a Bill of Quantities to begin sourcing.',btn:'Upload BOQ',tab:'estimates' as const},
         ].map(c => (
-          <div key={c.n} className="card">
-            <div className="card-num">{c.n}</div>
+          <div key={c.n} className="os-card">
+            <div className="os-card-num">{c.n}</div>
             {c.val !== null && (
               loading
-                ? <div className="sk" style={{height:'2.5rem',width:'3rem',marginBottom:'.75rem'}}/>
-                : <div style={{fontFamily:'var(--fd)',fontSize:'3rem',fontWeight:300,color:'var(--white)',lineHeight:1,marginBottom:'.75rem'}}>{c.val}</div>
+                ? <div className="os-sk" style={{height:'2.5rem',width:'3rem',marginBottom:'.75rem'}}/>
+                : <div style={{fontFamily:'var(--os-fd)',fontSize:'3rem',fontWeight:300,color:'var(--os-white)',lineHeight:1,marginBottom:'.75rem'}}>{c.val}</div>
             )}
-            <h3 className="card-title">{c.title}</h3>
-            {c.desc && <p className="card-desc">{c.desc}</p>}
-            <button className="btn-g" style={{marginTop:'2rem',width:'100%'}} onClick={() => onNavigate(c.tab)}>{c.btn}</button>
+            <h3 className="os-card-title">{c.title}</h3>
+            {c.desc && <p className="os-card-desc">{c.desc}</p>}
+            <button className="os-btn-ghost" style={{marginTop:'2rem',width:'100%'}} onClick={() => onNavigate(c.tab)}>{c.btn}</button>
           </div>
         ))}
       </div>
@@ -62,10 +62,10 @@ export default function OverviewView({ projects, estimates, claims, loading, onN
       {!loading && quotes > 0 && (
         <div style={{marginTop:'3rem',padding:'1.5rem 2rem',background:'rgba(168,54,90,.06)',border:'1px solid rgba(168,54,90,.25)',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'1rem'}}>
           <div>
-            <div style={{fontSize:'.65rem',color:'var(--danger)',letterSpacing:'.12em',textTransform:'uppercase',marginBottom:'.3rem'}}>Action Required</div>
-            <div style={{fontSize:'.9rem',color:'var(--white)'}}>You have {quotes} quote{quotes>1?'s':''} awaiting review and approval.</div>
+            <div style={{fontSize:'.65rem',color:'var(--os-danger)',letterSpacing:'.12em',textTransform:'uppercase',marginBottom:'.3rem'}}>Action Required</div>
+            <div style={{fontSize:'.9rem',color:'var(--os-white)'}}>You have {quotes} quote{quotes>1?'s':''} awaiting review and approval.</div>
           </div>
-          <button className="btn-p" onClick={() => onNavigate('estimates')}>Review Now</button>
+          <button className="os-btn-primary" onClick={() => onNavigate('estimates')}>Review Now</button>
         </div>
       )}
     </div>

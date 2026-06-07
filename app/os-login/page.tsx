@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
-import { signIn } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { authClient, signIn } from "@/lib/auth-client";
 
 export default function OSLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -43,12 +41,15 @@ export default function OSLoginPage() {
 
     if (parseInt(captchaAnswer) !== captchaA + captchaB) {
       setCaptchaError(true);
+      setCaptchaA(Math.floor(Math.random() * 9) + 1);
+      setCaptchaB(Math.floor(Math.random() * 9) + 1);
+      setCaptchaAnswer("");
       setLoading(false);
       return;
     }
     setCaptchaError(false);
 
-    const { data, error } = await signIn.email({
+    const { error } = await signIn.email({
       email,
       password,
     });
@@ -59,7 +60,18 @@ export default function OSLoginPage() {
       return;
     }
 
-    router.push("/os-dashboard");
+    const sessionRes = await authClient.getSession();
+    const role = (sessionRes?.data?.user as { role?: string } | undefined)?.role;
+
+    if (!sessionRes?.data?.user) {
+      setError("Authentication failed. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    if (role === "admin") window.location.href = "/admin-portal";
+    else if (role === "logistics") window.location.href = "/logistics-portal";
+    else window.location.href = "/os-dashboard";
   }
 
   return (
@@ -285,18 +297,33 @@ export default function OSLoginPage() {
 
             <h1
               style={{
-                fontFamily: "var(--font-cormorant)",
-                fontSize: "clamp(36px, 5vw, 52px)",
-                fontWeight: 300,
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: '0.4em',
+                margin: '0 0 28px 0',
                 lineHeight: 1.0,
-                letterSpacing: "-0.02em",
-                margin: "0 0 28px 0",
-                color: "var(--text-heading)",
-                whiteSpace: "nowrap",
               }}
             >
-              AEDIFICIUM{" "}
-              <em className="os-login-gradient">OS</em>
+              <span style={{
+                fontFamily: 'var(--font-montserrat-alt)',
+                fontSize: 'clamp(32px, 5vw, 52px)',
+                fontWeight: 400,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--text-heading)',
+                fontStyle: 'normal',
+              }}>
+                AEDIFICIUM
+              </span>
+              <em className="os-login-gradient" style={{
+                fontFamily: 'var(--font-cormorant)',
+                fontSize: 'clamp(24px, 3.5vw, 38px)',
+                fontWeight: 500,
+                letterSpacing: '0.05em',
+                fontStyle: 'italic',
+              }}>
+                OS
+              </em>
             </h1>
 
             {forgotMode ? (

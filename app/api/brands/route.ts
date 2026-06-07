@@ -18,6 +18,9 @@ function getPool() {
   return pool;
 }
 
+// NOTE: This endpoint is intentionally public (no getAuthUser()).
+// The brand library is consumed by both the public /brands marketing
+// page and the authenticated OS dashboard, so it must remain unauthenticated.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const categoriesOnly = searchParams.get('categories');

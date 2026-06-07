@@ -1,7 +1,7 @@
 // app/api/admin/users/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { hashPassword } from 'better-auth/crypto'
-import { query } from '@/lib/db'
+import { query, transaction } from '@/lib/db'
 import { getAuthUser, requireRole } from '@/lib/api-auth'
 
 const ALLOWED_ROLES = ['designer', 'logistics'] as const
@@ -48,17 +48,18 @@ export async function POST(req: NextRequest) {
     const hashed = await hashPassword(password)
     const normalizedEmail = email.toLowerCase()
 
-    await query(
-      `INSERT INTO "user" (id, name, email, "emailVerified", role, studio_name, is_active)
-       VALUES ($1, $2, $3, true, $4, $5, true)`,
-      [userId, name, normalizedEmail, role, studio_name || null]
-    )
-
-    await query(
-      `INSERT INTO account (id, "accountId", "providerId", "userId", password, "createdAt", "updatedAt")
-       VALUES ($1, $2, 'credential', $3, $4, NOW(), NOW())`,
-      [crypto.randomUUID(), normalizedEmail, userId, hashed]
-    )
+    await transaction(async (client) => {
+      await client.query(
+        `INSERT INTO "user" (id, name, email, "emailVerified", role, studio_name, is_active)
+         VALUES ($1, $2, $3, true, $4, $5, true)`,
+        [userId, name, normalizedEmail, role, studio_name || null]
+      )
+      await client.query(
+        `INSERT INTO account (id, "accountId", "providerId", "userId", password, "createdAt", "updatedAt")
+         VALUES ($1, $2, 'credential', $3, $4, NOW(), NOW())`,
+        [crypto.randomUUID(), normalizedEmail, userId, hashed]
+      )
+    })
 
     return NextResponse.json({ id: userId, email: normalizedEmail }, { status: 201 })
   } catch (err) {

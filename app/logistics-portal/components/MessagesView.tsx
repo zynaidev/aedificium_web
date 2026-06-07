@@ -101,39 +101,42 @@ export default function MessagesView() {
 
   return (
     <div>
-      <div className="eyebrow">Communications</div>
-      <h1 className="title">Messages</h1>
+      <div className="os-eyebrow">Communications</div>
+      <h1 className="os-page-title">Messages</h1>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '2rem' }}>
         <div>
-          <div className="row-sub" style={{ marginBottom: '1rem' }}>
+          <div className="os-row-sub" style={{ marginBottom: '1rem' }}>
             Shipment Threads
           </div>
 
           {loading ? (
             [1, 2, 3].map((i) => (
-              <div key={i} className="row" style={{ gridTemplateColumns: '1fr', cursor: 'default' }}>
-                <div className="sk" style={{ height: '1rem', width: '70%' }} />
+              <div
+                key={i}
+                style={{ padding: '1.25rem', marginBottom: '0.75rem', border: '1px solid var(--os-border)' }}
+              >
+                <div className="os-sk" style={{ height: '1rem', width: '70%' }} />
               </div>
             ))
           ) : shipments.length === 0 ? (
-            <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>No shipment threads yet.</p>
+            <p style={{ color: 'var(--os-mid-gray)', fontSize: '.875rem' }}>No shipment threads yet.</p>
           ) : (
             shipments.map((s) => (
               <div
                 key={s.id}
-                className="row"
+                className="os-card"
                 style={{
-                  gridTemplateColumns: '1fr',
+                  padding: '1.25rem',
+                  marginBottom: '0.75rem',
                   cursor: 'pointer',
-                  background:
-                    selected?.id === s.id ? 'rgba(193,122,74,.06)' : 'transparent',
+                  borderColor: selected?.id === s.id ? 'var(--os-border-gold)' : 'var(--os-border)',
                 }}
                 onClick={() => setSelected(s)}
               >
@@ -144,14 +147,14 @@ export default function MessagesView() {
                         width: '6px',
                         height: '6px',
                         borderRadius: '50%',
-                        background: 'var(--accent)',
+                        background: 'var(--os-accent)',
                         flexShrink: 0,
                       }}
                     />
                   )}
                   <div>
-                    <div className="row-title">{s.shipment_ref}</div>
-                    <div className="row-sub" style={{ marginTop: '.25rem' }}>
+                    <div className="os-row-title">{s.shipment_ref}</div>
+                    <div className="os-row-sub" style={{ marginTop: '.25rem' }}>
                       {s.project_name} · {s.architect_name}
                     </div>
                   </div>
@@ -163,7 +166,7 @@ export default function MessagesView() {
 
         <div
           style={{
-            border: '1px solid var(--border)',
+            border: '1px solid var(--os-border)',
             background: 'rgba(17,16,9,.4)',
             minHeight: '420px',
             display: 'flex',
@@ -177,8 +180,8 @@ export default function MessagesView() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--mg)',
-                fontSize: '.85rem',
+                color: 'var(--os-mid-gray)',
+                fontSize: '.875rem',
               }}
             >
               Select a shipment to view messages.
@@ -188,23 +191,23 @@ export default function MessagesView() {
               <div
                 style={{
                   padding: '1.5rem 2rem',
-                  borderBottom: '1px solid var(--border)',
+                  borderBottom: '1px solid var(--os-border)',
                 }}
               >
-                <div style={{ fontFamily: 'var(--fd)', fontSize: '1.2rem', color: 'var(--white)' }}>
+                <div style={{ fontFamily: 'var(--os-fd)', fontSize: '1.2rem', color: 'var(--os-white)' }}>
                   {selected.shipment_ref}
                 </div>
-                <div className="row-sub" style={{ marginTop: '.35rem' }}>
+                <div className="os-row-sub" style={{ marginTop: '.35rem' }}>
                   {selected.project_name} · {selected.architect_name}
                 </div>
               </div>
               <div style={{ flex: 1, padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column' }}>
-                <div className="chat" style={{ height: 'auto', flex: 1, marginTop: 0 }}>
-                  <div className="chat-msgs" style={{ minHeight: '280px' }}>
+                <div className="os-chat" style={{ height: 'auto', flex: 1, marginTop: 0 }}>
+                  <div className="os-chat-msgs" style={{ minHeight: '280px' }}>
                     {msgsLoading ? (
                       <div
                         style={{
-                          color: 'var(--mg)',
+                          color: 'var(--os-mid-gray)',
                           fontSize: '.75rem',
                           textAlign: 'center',
                           marginTop: '2rem',
@@ -215,7 +218,7 @@ export default function MessagesView() {
                     ) : msgs.length === 0 ? (
                       <div
                         style={{
-                          color: 'var(--mg)',
+                          color: 'var(--os-mid-gray)',
                           fontSize: '.75rem',
                           textAlign: 'center',
                           marginTop: '2rem',
@@ -227,10 +230,10 @@ export default function MessagesView() {
                       msgs.map((m) => (
                         <div
                           key={m.id}
-                          className={`msg ${m.sender_role === 'logistics' ? 'msg-me' : 'msg-other'}`}
+                          className={`os-msg ${m.sender_role === 'logistics' ? 'os-msg-me' : 'os-msg-other'}`}
                         >
                           <div>{m.message_body}</div>
-                          <div className="msg-meta">
+                          <div className="os-msg-meta">
                             {m.sender_name} ·{' '}
                             {new Date(m.created_at).toLocaleTimeString([], {
                               hour: '2-digit',
@@ -242,15 +245,15 @@ export default function MessagesView() {
                     )}
                     <div ref={endRef} />
                   </div>
-                  <form className="chat-form" onSubmit={send}>
+                  <form className="os-chat-form" onSubmit={send}>
                     <input
-                      className="chat-inp"
+                      className="os-chat-input"
                       placeholder="Message architect..."
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       required
                     />
-                    <button type="submit" className="chat-send" disabled={sending}>
+                    <button type="submit" className="os-chat-send" disabled={sending}>
                       {sending ? '...' : 'Send'}
                     </button>
                   </form>

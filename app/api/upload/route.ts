@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData()
     const file = formData.get('file')
     const type = formData.get('type')
-    const userId = formData.get('userId')
+    const userId = user.id
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json({ error: 'file required' }, { status: 400 })
@@ -24,9 +24,6 @@ export async function POST(req: NextRequest) {
       !ALLOWED_TYPES.includes(type as (typeof ALLOWED_TYPES)[number])
     ) {
       return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
-    }
-    if (typeof userId !== 'string' || !userId) {
-      return NextResponse.json({ error: 'userId required' }, { status: 400 })
     }
 
     const uploadDir = process.env.UPLOAD_DIR
@@ -41,12 +38,19 @@ export async function POST(req: NextRequest) {
     const fullDir = path.join(uploadDir, userId)
     const fullPath = path.join(uploadDir, relativePath)
 
+    const resolvedUploadDir = path.resolve(uploadDir)
+    const resolvedFilePath = path.resolve(fullPath)
+    const relative = path.relative(resolvedUploadDir, resolvedFilePath)
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      return NextResponse.json({ error: 'Invalid path' }, { status: 400 })
+    }
+
     fs.mkdirSync(fullDir, { recursive: true })
 
     const buffer = Buffer.from(await file.arrayBuffer())
     fs.writeFileSync(fullPath, buffer)
 
-    const url = `${baseUrl}/uploads/${relativePath}`
+    const url = `${baseUrl}/api/files/${relativePath}`
     return NextResponse.json({ url })
   } catch (err) {
     if (err instanceof Response) return err

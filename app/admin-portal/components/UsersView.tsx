@@ -39,9 +39,9 @@ function UserSection({
     <div style={{ marginBottom: '3rem' }}>
       <div
         style={{
-          fontFamily: 'var(--fd)',
+          fontFamily: 'var(--os-fd)',
           fontSize: '1.3rem',
-          color: 'var(--white)',
+          color: 'var(--os-white)',
           marginBottom: '1.5rem',
         }}
       >
@@ -50,47 +50,47 @@ function UserSection({
       {loading ? (
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="row" style={{ gridTemplateColumns: '1fr' }}>
+            <div key={i} className="os-row" style={{ gridTemplateColumns: '1fr' }}>
               <div
-                className="sk"
+                className="os-sk"
                 style={{ height: '1.2rem', width: '40%', marginBottom: '.75rem' }}
               />
-              <div className="sk" style={{ height: '.8rem', width: '60%' }} />
+              <div className="os-sk" style={{ height: '.8rem', width: '60%' }} />
             </div>
           ))}
         </div>
       ) : users.length === 0 ? (
-        <p style={{ color: 'var(--mg)', fontSize: '.85rem' }}>{emptyLabel}</p>
+        <p style={{ color: 'var(--os-mid-gray)', fontSize: '.85rem' }}>{emptyLabel}</p>
       ) : (
         <div>
           {users.map((u) => (
             <div
               key={u.id}
-              className="row"
+              className="os-row"
               style={{ gridTemplateColumns: '1fr auto', alignItems: 'center' }}
             >
               <div>
-                <div className="row-title">{u.name}</div>
-                <div className="row-sub" style={{ marginBottom: '.5rem' }}>
+                <div className="os-row-title">{u.name}</div>
+                <div className="os-row-sub" style={{ marginBottom: '.5rem' }}>
                   {u.email}
                   {u.studio_name ? ` · ${u.studio_name}` : ''}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span className={`badge ${u.is_active ? 'ok' : 'alert'}`}>
+                  <span className={`os-badge ${u.is_active ? 'ok' : 'alert'}`}>
                     {u.is_active ? 'Active' : 'Inactive'}
                   </span>
-                  <span style={{ fontSize: '.65rem', color: 'var(--mg)' }}>
+                  <span style={{ fontSize: '.65rem', color: 'var(--os-mid-gray)' }}>
                     {new Date(u.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
               <button
-                className={u.is_active ? 'btn-l' : 'btn-p'}
+                className={u.is_active ? 'os-btn-link' : 'os-btn-primary'}
                 disabled={updatingId === u.id}
                 onClick={() => onToggle(u.id, !u.is_active)}
                 style={
                   u.is_active
-                    ? { color: 'var(--danger)', textDecorationColor: 'var(--danger)' }
+                    ? { color: 'var(--os-danger)', textDecorationColor: 'var(--os-danger)' }
                     : undefined
                 }
               >
@@ -181,12 +181,12 @@ export default function UsersView() {
 
   return (
     <div>
-      <div className="eyebrow">User Management</div>
-      <h1 className="title">Users</h1>
+      <div className="os-eyebrow">User Management</div>
+      <h1 className="os-page-title">Users</h1>
 
       <div
         style={{
-          border: '1px solid var(--border)',
+          border: '1px solid var(--os-border)',
           padding: '2rem',
           marginBottom: '3rem',
           background: 'rgba(17,16,9,.3)',
@@ -194,41 +194,41 @@ export default function UsersView() {
       >
         <div
           style={{
-            fontFamily: 'var(--fd)',
+            fontFamily: 'var(--os-fd)',
             fontSize: '1.2rem',
-            color: 'var(--white)',
+            color: 'var(--os-white)',
             marginBottom: '1.5rem',
           }}
         >
           Create New User
         </div>
         <form onSubmit={handleSubmit}>
-          <label className="lbl">Name</label>
+          <label className="os-input-label">Name</label>
           <input
-            className="inp"
+            className="os-input"
             value={form.name}
             onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
             required
           />
-          <label className="lbl">Email</label>
+          <label className="os-input-label">Email</label>
           <input
-            className="inp"
+            className="os-input"
             type="email"
             value={form.email}
             onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
             required
           />
-          <label className="lbl">Password</label>
+          <label className="os-input-label">Password</label>
           <input
-            className="inp"
+            className="os-input"
             type="password"
             value={form.password}
             onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
             required
           />
-          <label className="lbl">Role</label>
+          <label className="os-input-label">Role</label>
           <select
-            className="inp"
+            className="os-input"
             value={form.role}
             onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
             required
@@ -236,25 +236,25 @@ export default function UsersView() {
             <option value="designer">Designer</option>
             <option value="logistics">Logistics</option>
           </select>
-          <label className="lbl">Studio Name (optional)</label>
+          <label className="os-input-label">Studio Name (optional)</label>
           <input
-            className="inp"
+            className="os-input"
             value={form.studio_name}
             onChange={(e) => setForm((p) => ({ ...p, studio_name: e.target.value }))}
           />
-          <button type="submit" className="btn-p" disabled={busy}>
+          <button type="submit" className="os-btn-primary" disabled={busy}>
             {busy ? 'Creating...' : 'Create User'}
           </button>
         </form>
         {success && (
-          <p style={{ color: 'var(--ok)', fontSize: '.85rem', marginTop: '1rem' }}>
+          <p style={{ color: 'var(--os-success)', fontSize: '.85rem', marginTop: '1rem' }}>
             {success}
           </p>
         )}
       </div>
 
       {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--os-danger)', fontSize: '.85rem', marginBottom: '1.5rem' }}>
           {error}
         </p>
       )}
