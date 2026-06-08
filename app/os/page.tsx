@@ -39,7 +39,7 @@ export default function OSPage() {
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true, margin: "0px" });
   const roadmapRef = useRef(null);
-  const roadmapInView = useInView(roadmapRef, { once: true, margin: "-200px" });
+  const roadmapInView = useInView(roadmapRef, { once: true, margin: "0px" });
   const ctaRef = useRef(null);
   const ctaInView = useInView(ctaRef, { once: true, margin: "0px" });
   const [activePhase, setActivePhase] = useState(-1);
@@ -112,7 +112,32 @@ export default function OSPage() {
           .os-hero { padding: 120px 0 72px 0 !important; }
           .os-cards { grid-template-columns: 1fr !important; }
           .os-cta-box { padding: 40px 24px !important; }
-          .os-roadmap { padding: 80px 0 !important; }
+          .os-roadmap {
+            padding: 72px 0 !important;
+          }
+          .os-roadmap-container {
+            padding: 0 24px !important;
+            max-width: 100% !important;
+          }
+          .os-roadmap-header {
+            padding: 0 24px !important;
+            margin-bottom: 48px !important;
+          }
+          .os-timeline-grid {
+            grid-template-columns: 32px 1fr !important;
+            gap: 0 !important;
+          }
+          .os-phase-content {
+            padding-left: 20px !important;
+            padding-bottom: 40px !important;
+          }
+          .os-phase-title {
+            font-size: 24px !important;
+          }
+          .os-phase-tags {
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+          }
         }
       `}</style>
 
@@ -459,6 +484,7 @@ export default function OSPage() {
           }}
         >
           <div
+            className="os-roadmap-header"
             style={{
               maxWidth: "var(--container-max)",
               margin: "0 auto",
@@ -517,6 +543,7 @@ export default function OSPage() {
 
           <div
             ref={roadmapRef}
+            className="os-roadmap-container"
             style={{
               maxWidth: "780px",
               margin: "0 auto",
@@ -526,6 +553,7 @@ export default function OSPage() {
             {PHASES.map((phase, i) => (
               <div
                 key={phase.num}
+                className="os-timeline-grid"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "40px 1fr",
@@ -541,7 +569,8 @@ export default function OSPage() {
                 >
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
-                    animate={roadmapInView ? { scale: 1, opacity: 1 } : {}}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true, margin: "0px" }}
                     transition={{
                       duration: 0.5,
                       delay: i * 0.2,
@@ -615,11 +644,13 @@ export default function OSPage() {
                 </div>
 
                 <motion.div
+                  className="os-phase-content"
                   initial={{ opacity: 0, x: 16 }}
-                  animate={roadmapInView ? { opacity: 1, x: 0 } : {}}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "0px" }}
                   transition={{
                     duration: 0.7,
-                    delay: i * 0.2 + 0.1,
+                    delay: i * 0.2,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   style={{
@@ -674,6 +705,7 @@ export default function OSPage() {
                   </div>
 
                   <p
+                    className="os-phase-title"
                     style={{
                       fontFamily: "var(--font-cormorant)",
                       fontSize: "clamp(24px, 2.8vw, 34px)",
@@ -708,7 +740,7 @@ export default function OSPage() {
                   </p>
 
                   {phase.active && (
-                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <div className="os-phase-tags" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                       {phase.tags.map((tag) => (
                         <span
                           key={tag}
