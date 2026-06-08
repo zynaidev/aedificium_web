@@ -27,11 +27,10 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 28 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
@@ -51,7 +50,7 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    const imageCount = isMobile ? 30 : 103;
+    const imageCount = isMobile ? 15 : 40;
     const colCount = isMobile ? 3 : 5;
     const shuffled = shuffleArray(ALL_IMAGES.slice(0, imageCount));
     const newCols = Array.from({ length: colCount }, (_, colIndex) =>
@@ -92,6 +91,8 @@ export default function Hero() {
       style={{
         position: "relative",
         minHeight: "100svh",
+        containIntrinsicSize: "100vw 100svh",
+        contentVisibility: "auto",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
@@ -251,6 +252,11 @@ export default function Hero() {
             padding-right: 0 !important;
           }
         }
+        @media (prefers-reduced-motion: reduce) {
+          .aed-img-track {
+            animation: none !important;
+          }
+        }
       `}</style>
 
       <div
@@ -297,6 +303,7 @@ export default function Hero() {
           transform: "none",
           opacity: mounted ? 1 : 0,
           transition: "opacity 1.5s ease",
+          contain: "layout style paint",
         }}
       >
         {cols.slice(0, isMobile ? 3 : 5).map((colImages, colIndex) => (
@@ -314,6 +321,7 @@ export default function Hero() {
             {[0, 1].map((trackIndex) => (
               <div
                 key={trackIndex}
+                className="aed-img-track"
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -336,10 +344,15 @@ export default function Hero() {
                     <img
                       src={src}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
+                      width={300}
+                      height={400}
                       style={{
                         display: "block",
                         width: "100%",
                         height: "auto",
+                        aspectRatio: "3/4",
                         objectFit: "cover",
                         opacity: 0.65,
                         filter: "grayscale(30%)",

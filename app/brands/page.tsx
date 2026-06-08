@@ -114,6 +114,53 @@ export default function BrandsPage() {
     @media (max-width: 767px) {
       .brands-grid { grid-template-columns: 1fr !important; }
       .brand-item { grid-column: span 1 !important; grid-row: span 1 !important; }
+      .brands-filter-bar {
+        padding: 20px 0 !important;
+        border-bottom: 1px solid rgba(185,139,54,0.15) !important;
+      }
+      .brands-filter-inner {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0 !important;
+      }
+      .brands-filter-btn {
+        padding: 12px 16px 12px 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+        font-size: 10px !important;
+        letter-spacing: 0.12em !important;
+        text-align: left !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .brands-filter-btn::after {
+        display: none !important;
+      }
+      .brands-filter-btn.active {
+        color: var(--accent-gold) !important;
+        background: rgba(185,139,54,0.06) !important;
+        padding-left: 10px !important;
+        border-left: 2px solid var(--accent-gold) !important;
+      }
+    }
+    @media (max-width: 1023px) and (min-width: 768px) {
+      .brands-filter-inner {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0 !important;
+      }
+      .brands-filter-btn {
+        padding: 10px 16px 10px 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+      }
+      .brands-filter-btn::after {
+        display: none !important;
+      }
+      .brands-filter-btn.active {
+        color: var(--accent-gold) !important;
+        padding-left: 10px !important;
+        border-left: 2px solid var(--accent-gold) !important;
+      }
     }
   `}</style>
 
@@ -195,12 +242,12 @@ export default function BrandsPage() {
         </div>
       </section>
 
-      {/* STICKY FILTER BAR */}
+      {/* FILTER BAR */}
       <div
+        className="brands-filter-bar"
         style={{
-          position: "sticky",
-          top: "80px",
-          zIndex: 100,
+          position: "relative",
+          zIndex: 1,
           background: "rgba(10,8,6,0.96)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
@@ -209,6 +256,7 @@ export default function BrandsPage() {
         }}
       >
         <div
+          className="brands-filter-inner"
           style={{
             maxWidth: "var(--container-max)",
             margin: "0 auto",

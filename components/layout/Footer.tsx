@@ -1,11 +1,26 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 export default function Footer() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   return (
     <footer
       style={{
         background: "var(--bg-base)",
-        padding: "80px clamp(24px, 5vw, 80px) 40px",
+        padding: isMobile ? "56px 24px 32px 24px" : "80px 0 48px 0",
         borderTop: "1px solid var(--border-hairline)",
         position: "relative",
         overflow: "hidden",
@@ -25,12 +40,6 @@ export default function Footer() {
       />
 
       <style>{`
-.aed-f-grid {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1fr 1fr;
-  gap: 64px;
-  margin-bottom: 72px;
-}
 .aed-f-heading {
   font-family: var(--font-inter);
   font-size: 10px;
@@ -43,7 +52,7 @@ export default function Footer() {
 }
 .aed-f-link {
   font-family: var(--font-inter);
-  font-size: 13px;
+  font-size: ${isMobile ? "15px" : "13px"};
   letter-spacing: 0.06em;
   color: var(--text-tertiary);
   text-decoration: none;
@@ -56,7 +65,7 @@ export default function Footer() {
 }
 .aed-f-link-gold {
   font-family: var(--font-inter);
-  font-size: 13px;
+  font-size: ${isMobile ? "15px" : "13px"};
   letter-spacing: 0.06em;
   color: rgba(185,139,54,0.75);
   text-decoration: none;
@@ -66,48 +75,6 @@ export default function Footer() {
 }
 .aed-f-link-gold:hover {
   color: var(--accent-gold);
-}
-.aed-f-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 32px;
-  border-top: 1px solid var(--border-hairline);
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.aed-f-legal {
-  display: flex;
-  gap: 32px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-@media (max-width: 1023px) {
-  .aed-f-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 48px !important;
-  }
-  .aed-f-col-brand {
-    grid-column: span 2;
-  }
-}
-@media (max-width: 767px) {
-  .aed-f-grid {
-    grid-template-columns: 1fr !important;
-    gap: 40px !important;
-  }
-  .aed-f-col-brand {
-    grid-column: span 1 !important;
-  }
-  .aed-f-bottom {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  .aed-f-legal {
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
 }
       `}</style>
 
@@ -119,15 +86,36 @@ export default function Footer() {
           boxSizing: "border-box",
         }}
       >
-        <div className="aed-f-grid">
-          <div className="aed-f-col-brand">
+        <div
+          className="aed-f-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile
+              ? "1fr"
+              : isTablet
+                ? "1fr 1fr"
+                : "2fr 1fr 1fr",
+            gap: isMobile ? "0" : isTablet ? "48px" : "64px",
+            marginBottom: isMobile ? "0" : "72px",
+          }}
+        >
+          <div
+            className="aed-f-col-brand"
+            style={{
+              paddingBottom: isMobile ? "32px" : "0",
+              borderBottom: isMobile
+                ? "1px solid rgba(185,139,54,0.12)"
+                : "none",
+              gridColumn: isTablet ? "1 / -1" : "auto",
+            }}
+          >
             <a
               href="/"
               style={{
-                fontFamily: "var(--font-cormorant)",
-                fontSize: "18px",
+                fontFamily: "var(--font-montserrat-alt)",
+                fontSize: "15px",
                 fontWeight: 400,
-                letterSpacing: "0.22em",
+                letterSpacing: "0.15em",
                 color: "var(--text-heading)",
                 marginBottom: "20px",
                 textTransform: "uppercase",
@@ -176,7 +164,16 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
+          <div
+            className="aed-f-col-nav"
+            style={{
+              paddingTop: isMobile ? "24px" : "0",
+              paddingBottom: isMobile ? "24px" : "0",
+              borderBottom: isMobile
+                ? "1px solid rgba(185,139,54,0.08)"
+                : "none",
+            }}
+          >
             <p className="aed-f-heading">Platform</p>
             <a href="/platform" className="aed-f-link">
               Platform
@@ -192,30 +189,13 @@ export default function Footer() {
             </a>
           </div>
 
-          <div>
-            <p className="aed-f-heading">Connect</p>
-            <a
-              href="https://instagram.com/aedificium.design"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="aed-f-link"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://linkedin.com/company/aedificium"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="aed-f-link"
-            >
-              LinkedIn
-            </a>
-            <a href="/contact" className="aed-f-link">
-              Contact Us
-            </a>
-          </div>
-
-          <div>
+          <div
+            className="aed-f-col-access"
+            style={{
+              paddingTop: isMobile ? "24px" : "0",
+              paddingBottom: isMobile ? "24px" : "0",
+            }}
+          >
             <p className="aed-f-heading">Access</p>
             <a href="/request-access" className="aed-f-link-gold">
               Start a Project →
@@ -224,15 +204,25 @@ export default function Footer() {
               Partner Login
             </a>
             <a href="#" className="aed-f-link">
-              Privacy Policy
-            </a>
-            <a href="#" className="aed-f-link">
               Terms of Use
             </a>
           </div>
         </div>
 
-        <div className="aed-f-bottom">
+        <div
+          className="aed-f-bottom"
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "space-between",
+            alignItems: isMobile ? "flex-start" : "center",
+            gap: isMobile ? "8px" : "0",
+            paddingTop: isMobile ? "24px" : "32px",
+            borderTop: "1px solid var(--border-hairline)",
+            marginTop: "0",
+            flexWrap: "wrap",
+          }}
+        >
           <span
             style={{
               fontFamily: "var(--font-inter)",
@@ -243,80 +233,6 @@ export default function Footer() {
           >
             © 2026 Atelier Aedificium Design Kft. Budapest — Europe.
           </span>
-          <ul className="aed-f-legal">
-            <li>
-              <a
-                href="#"
-                style={{
-                  fontFamily: "var(--font-inter)",
-                  fontSize: "10px",
-                  color: "var(--text-tertiary)",
-                  textDecoration: "none",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  transition: "color 0.25s ease",
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-heading)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-tertiary)";
-                }}
-              >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                style={{
-                  fontFamily: "var(--font-inter)",
-                  fontSize: "10px",
-                  color: "var(--text-tertiary)",
-                  textDecoration: "none",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  transition: "color 0.25s ease",
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-heading)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-tertiary)";
-                }}
-              >
-                Cookies Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                style={{
-                  fontFamily: "var(--font-inter)",
-                  fontSize: "10px",
-                  color: "var(--text-tertiary)",
-                  textDecoration: "none",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  transition: "color 0.25s ease",
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-heading)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLAnchorElement).style.color =
-                    "var(--text-tertiary)";
-                }}
-              >
-                Imprint
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </footer>
