@@ -130,16 +130,33 @@ export default function Hero() {
           padding-bottom: 8px;
           margin-bottom: -8px;
         }
-        @media (max-width: 1023px) {
-          .hero-left-overlay-mobile { display: none !important; }
+        @media (max-width: 1023px) and (min-width: 768px) {
+          .hero-section {
+            min-height: 100svh !important;
+          }
           .hero-wall {
             display: flex !important;
-            width: 50% !important;
+            width: 55% !important;
             right: -4% !important;
-            opacity: 0.5 !important;
+            opacity: 0.45 !important;
           }
           .hero-left {
-            max-width: 600px !important;
+            padding: 0 40px !important;
+            max-width: 580px !important;
+          }
+          .hero-h1 {
+            font-size: clamp(48px, 8vw, 72px) !important;
+          }
+          .hero-cta-row {
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+          }
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+          }
+          .hero-grid > div[aria-hidden="true"] {
+            display: none !important;
           }
         }
         .hero-left-overlay-mobile {
@@ -154,40 +171,84 @@ export default function Hero() {
         }
         @media (max-width: 767px) {
           .hero-section {
-            min-height: auto !important;
-            padding: 140px 0 100px 0 !important;
+            min-height: 100svh !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: flex-start !important;
           }
-          .hero-left-overlay-mobile { display: block !important; }
           .hero-wall {
             display: flex !important;
+            position: absolute !important;
             width: 100% !important;
+            height: 100% !important;
             right: 0 !important;
             left: 0 !important;
-            opacity: 0.25 !important;
+            top: 0 !important;
+            opacity: 0.2 !important;
             transform: none !important;
           }
           .hero-left {
-            padding: 0 28px !important;
+            position: relative !important;
+            z-index: 2 !important;
+            padding: 140px 28px 100px 28px !important;
+            max-width: 100% !important;
+            width: 100% !important;
           }
           .hero-eyebrow {
-            margin-bottom: 20px !important;
+            margin-bottom: 32px !important;
+          }
+          .hero-eyebrow span {
+            font-size: 9px !important;
+            letter-spacing: 0.22em !important;
+          }
+          .hero-h1 {
+            font-size: clamp(44px, 11vw, 64px) !important;
+            line-height: 1.0 !important;
+            margin-bottom: 36px !important;
+            letter-spacing: -0.02em !important;
           }
           .hero-body-text {
-            margin-top: 24px !important;
-            margin-bottom: 36px !important;
+            margin-top: 0 !important;
+            margin-bottom: 48px !important;
+            font-size: 15px !important;
+            line-height: 1.8 !important;
+            max-width: 100% !important;
           }
           .hero-cta-row {
             flex-direction: column !important;
-            margin-top: 8px !important;
-            gap: 10px !important;
+            gap: 12px !important;
+            margin-top: 0 !important;
+            width: 100% !important;
           }
-          .hero-cta-row a {
+          .hero-cta-row a,
+          .hero-cta-row button {
             width: 100% !important;
             text-align: center !important;
             box-sizing: border-box !important;
+            padding: 14px 24px !important;
           }
           .hero-vertical-text {
             display: none !important;
+          }
+          .hero-left-overlay-mobile {
+            display: block !important;
+            background: linear-gradient(
+              to bottom,
+              rgba(10,8,6,0.85) 0%,
+              rgba(10,8,6,0.75) 60%,
+              rgba(10,8,6,0.9) 100%
+            ) !important;
+          }
+          .hero-grid {
+            display: block !important;
+            gap: 0 !important;
+          }
+          .hero-grid > div[aria-hidden="true"] {
+            display: none !important;
+          }
+          .hero-container {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
           }
         }
       `}</style>
@@ -356,6 +417,7 @@ export default function Hero() {
       </div>
 
       <Container
+        className="hero-container hero-grid"
         style={{
           position: "relative",
           zIndex: 3,
@@ -408,6 +470,7 @@ export default function Hero() {
           </motion.div>
           <motion.div variants={itemVariants}>
             <h1
+              className="hero-h1"
               style={{
                 fontFamily: "var(--font-cormorant)",
                 fontSize: "clamp(48px, 6.5vw, 88px)",
