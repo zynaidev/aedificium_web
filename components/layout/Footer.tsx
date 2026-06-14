@@ -76,6 +76,14 @@ export default function Footer() {
 .aed-f-link-gold:hover {
   color: var(--accent-gold);
 }
+.aed-f-credit-link {
+  color: #9E772F;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.aed-f-credit-link:hover {
+  color: #B8943A;
+}
       `}</style>
 
       <div
@@ -232,6 +240,24 @@ export default function Footer() {
             }}
           >
             © 2026 Atelier Aedificium Design Kft. Budapest — Europe.
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-inter)",
+              fontSize: "11px",
+              color: "var(--text-tertiary)",
+              letterSpacing: "0.06em",
+            }}
+          >
+            Design by{" "}
+            <a
+              href="https://zynai.hu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="aed-f-credit-link"
+            >
+              ZynAI
+            </a>
           </span>
         </div>
       </div>
