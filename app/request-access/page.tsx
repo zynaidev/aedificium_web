@@ -15,6 +15,13 @@ interface FormData {
   requirements: string[];
 }
 
+function generateChallenge() {
+  return {
+    a: Math.floor(Math.random() * 9) + 1,
+    b: Math.floor(Math.random() * 9) + 1,
+  };
+}
+
 export default function RequestAccessPage() {
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -30,6 +37,10 @@ export default function RequestAccessPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [submitHover, setSubmitHover] = useState(false);
+  const [hpField, setHpField] = useState("");
+  const [formRenderedAt] = useState(() => Date.now());
+  const [challenge, setChallenge] = useState(generateChallenge);
+  const [mathAnswer, setMathAnswer] = useState("");
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -58,9 +69,17 @@ export default function RequestAccessPage() {
           ...form,
           requirements: form.requirements.join(", "),
           status: "pending",
+          hp_field: hpField,
+          form_rendered_at: formRenderedAt,
+          math_a: challenge.a,
+          math_b: challenge.b,
+          math_answer: mathAnswer,
         }),
       });
-      if (!res.ok) throw new Error("Submission failed");
+      if (!res.ok) {
+        if (res.status === 422) throw new Error("math");
+        throw new Error("Submission failed");
+      }
       setSuccess(true);
       setForm({
         name: "",
@@ -72,8 +91,14 @@ export default function RequestAccessPage() {
         timeline: "",
         requirements: [],
       });
-    } catch {
-      setError("Submission failed. Please try again.");
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message === "math"
+          ? "Incorrect answer to the verification question. Please try again."
+          : "Submission failed. Please try again."
+      );
+      setChallenge(generateChallenge());
+      setMathAnswer("");
     } finally {
       setLoading(false);
     }
@@ -322,6 +347,30 @@ export default function RequestAccessPage() {
               onSubmit={handleSubmit}
               style={{ display: "flex", flexDirection: "column", gap: "24px" }}
             >
+              {/* Honeypot: visually hidden (not display:none) so basic bots that
+                  check computed style still fill it; humans never see it. */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-5000px",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                }}
+              >
+                <label htmlFor="company_website">Company Website</label>
+                <input
+                  id="company_website"
+                  name="company_website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpField}
+                  onChange={(e) => setHpField(e.target.value)}
+                />
+              </div>
+
               <div
                 className="ra-row"
                 style={{
@@ -488,6 +537,48 @@ export default function RequestAccessPage() {
                       <span>{req}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="ra-label" htmlFor="math_answer_input">
+                  Verification *
+                </label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-inter)",
+                      fontSize: "22px",
+                      fontWeight: 400,
+                      color: "var(--text-heading)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {challenge.a} + {challenge.b} =
+                  </span>
+                  <input
+                    id="math_answer_input"
+                    name="math_answer_input"
+                    type="number"
+                    inputMode="numeric"
+                    required
+                    value={mathAnswer}
+                    onChange={(e) => setMathAnswer(e.target.value)}
+                    className="ra-input"
+                    placeholder="?"
+                    style={{
+                      width: "90px",
+                      flex: "none",
+                      fontSize: "22px",
+                      textAlign: "center",
+                    }}
+                  />
                 </div>
               </div>
 
