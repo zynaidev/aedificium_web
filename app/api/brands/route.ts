@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     }
 
     const result = await getPool().query(
-      'SELECT brand_id, name, category, url FROM brands ORDER BY name ASC'
+      'SELECT brand_id, name, category, url, tier FROM brands ORDER BY name ASC'
     );
     return NextResponse.json(result.rows);
   } catch (error) {

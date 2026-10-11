@@ -10,6 +10,12 @@ interface Brand {
   name: string;
   category: string;
   url: string;
+  tier: string | null;
+}
+
+function getTierClass(tier: string) {
+  const n = tier.match(/(\d+)\s*$/)?.[1];
+  return n === "1" ? "tier-1" : n === "2" ? "tier-2" : "tier-n";
 }
 
 function toTitleCase(str: string) {
@@ -32,6 +38,7 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [tierFilter, setTierFilter] = useState("all");
   const [categories, setCategories] = useState([{ label: "All", value: "all" }]);
 
   useEffect(() => {
@@ -58,10 +65,24 @@ export default function BrandsPage() {
       .catch(() => {});
   }, []);
 
-  const filtered =
+  const byCategory =
     activeFilter === "all"
       ? brands
       : brands.filter((b) => b.category === activeFilter);
+
+  const tierCounts = new Map<string, number>();
+  for (const b of byCategory) {
+    const t = b.tier?.trim();
+    if (t) tierCounts.set(t, (tierCounts.get(t) ?? 0) + 1);
+  }
+  const tiers = Array.from(tierCounts.keys()).sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true })
+  );
+
+  const filtered =
+    tierFilter === "all"
+      ? byCategory
+      : byCategory.filter((b) => b.tier?.trim() === tierFilter);
 
   return (
     <main style={{ background: "var(--bg-base)", minHeight: "100vh" }}>
@@ -92,7 +113,23 @@ export default function BrandsPage() {
       background: rgba(17,16,9,0.3);
       padding: 3.5rem 2rem; text-align: center;
       transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-      cursor: pointer;
+      cursor: pointer; position: relative;
+    }
+    .brand-tier {
+      position: absolute; top: 10px; right: 12px;
+      font-family: var(--font-inter); font-size: 9px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 3px 7px; border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-tertiary); line-height: 1;
+    }
+    .brand-tier.tier-2 {
+      color: var(--text-secondary);
+      border-color: rgba(185,139,54,0.25);
+    }
+    .brand-tier.tier-1 {
+      color: #d4a020; font-weight: 600;
+      border-color: rgba(212,160,32,0.7);
+      background: rgba(185,139,54,0.14);
     }
     .brand-item:hover {
       transform: translateY(-4px);
@@ -270,13 +307,48 @@ export default function BrandsPage() {
           {categories.map((cat) => (
             <button
               key={cat.value}
-              onClick={() => setActiveFilter(cat.value)}
+              onClick={() => {
+                setActiveFilter(cat.value);
+                if (tierFilter !== "all" && !brands.some((b) => (cat.value === "all" || b.category === cat.value) && b.tier?.trim() === tierFilter)) {
+                  setTierFilter("all");
+                }
+              }}
               className={`brands-filter-btn ${activeFilter === cat.value ? "active" : ""}`}
             >
               {cat.label}
             </button>
           ))}
         </div>
+        {tiers.length > 0 && (
+          <div
+            className="brands-filter-inner"
+            style={{
+              maxWidth: "var(--container-max)",
+              margin: "16px auto 0",
+              padding: "0 clamp(24px,5vw,80px)",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px 32px",
+              alignItems: "center",
+            }}
+          >
+            <button
+              onClick={() => setTierFilter("all")}
+              className={`brands-filter-btn ${tierFilter === "all" ? "active" : ""}`}
+            >
+              All ({byCategory.length})
+            </button>
+            {tiers.map((t) => (
+              <button
+                key={t}
+                onClick={() => setTierFilter(t)}
+                className={`brands-filter-btn ${tierFilter === t ? "active" : ""}`}
+              >
+                {t} ({tierCounts.get(t)})
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* GRID */}
@@ -323,7 +395,7 @@ export default function BrandsPage() {
           )}
           {!loading && !error && (
             <motion.div
-              key={activeFilter}
+              key={`${activeFilter}-${tierFilter}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
@@ -367,6 +439,11 @@ export default function BrandsPage() {
                   >
                     {brand.name}
                   </a>
+                  {brand.tier?.trim() && (
+                    <span className={`brand-tier ${getTierClass(brand.tier.trim())}`}>
+                      {brand.tier.trim()}
+                    </span>
+                  )}
                 </motion.div>
               ))}
             </motion.div>
